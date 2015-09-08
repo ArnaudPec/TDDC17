@@ -205,8 +205,8 @@ class MyAgentProgram implements AgentProgram {
 
 	    iterationCounter--;
 
-	   // if (iterationCounter==0)
-	    //	return NoOpAction.NO_OP;
+	    if (iterationCounter==0)
+	    	return NoOpAction.NO_OP;
 
 	    DynamicPercept p = (DynamicPercept) percept;
 	    Boolean bump = (Boolean)p.getAttribute("bump");
