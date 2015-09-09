@@ -256,7 +256,7 @@ class MyAgentProgram implements AgentProgram {
 					state.updateWorld(state.agent_x_position-1,state.agent_y_position,state.WALL);
 					break;
 				}
-	    }
+	    } 
 	    if (dirt)
 	    	state.updateWorld(state.agent_x_position,state.agent_y_position,state.DIRT);
 	    else
