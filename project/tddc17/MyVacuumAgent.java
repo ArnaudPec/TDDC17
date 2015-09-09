@@ -49,8 +49,7 @@ class MyAgentState
 	{
 		Boolean bump = (Boolean)p.getAttribute("bump");
 
-		if (agent_last_action==ACTION_MOVE_FORWARD && !bump)
-	    {
+		if (agent_last_action==ACTION_MOVE_FORWARD && !bump){
 			switch (agent_direction) {
 			case MyAgentState.NORTH:
 				agent_y_position--;
@@ -65,8 +64,7 @@ class MyAgentState
 				agent_x_position--;
 				break;
 			}
-	    }
-
+	  }
 	}
 
 	public void updateWorld(int x_position, int y_position, int info)
@@ -103,7 +101,12 @@ class MyAgentProgram implements AgentProgram {
 
 	// Here you can define your variables!
 
-	public Boolean isHome = false;
+	public int phase = 1;
+	public int movement = 0;
+	public char turningDirection = 0; //0 ==> right, 1 ==> left
+	public Boolean turning = false;
+	public Boolean cleaned = false;
+
 	public int iterationCounter = 10;
 	public MyAgentState state = new MyAgentState();
 
@@ -133,51 +136,79 @@ class MyAgentProgram implements AgentProgram {
 	// use percepts as input to update the Agent position
 	// returns an action
 	private Action moveToHomePosition(DynamicPercept percept) {
-		
+
 		System.out.println("Going home.");
-		System.out.println("x=" + state.agent_x_position);
-    		System.out.println("y=" + state.agent_y_position);
-    		System.out.println("dir=" + state.agent_direction);
 
 		state.updatePosition(percept);
 
 		while (state.agent_x_position != 1 ){
-			
-		
+
 			while(state.agent_direction != 3){
 				state.agent_direction = ((state.agent_direction+1) % 4);
 				state.agent_last_action = state.ACTION_TURN_RIGHT;
 				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-			}	
+			}
 			state.agent_last_action = state.ACTION_MOVE_FORWARD;
 			return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
 
 		}
 
 		while (state.agent_y_position != 1 ){
-			
 
 			while(state.agent_direction != 0){
 				state.agent_direction = ((state.agent_direction+1) % 4);
 				state.agent_last_action = state.ACTION_TURN_RIGHT;
 				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-			}	
+			}
+
 			state.agent_last_action = state.ACTION_MOVE_FORWARD;
 			return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-
 		}
-		
-		System.out.println("Going home.");
-		isHome = true;
-		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+
+		System.out.println("Arrived at home.");
+
+		if (cleaned == true) {
+			System.out.println("Finished");
+			return NoOpAction.NO_OP;
+		}
+		else {
+
+			while(state.agent_direction != 1){
+				state.agent_direction = ((state.agent_direction+1) % 4);
+				state.agent_last_action = state.ACTION_TURN_RIGHT;
+				return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+			}
+			System.out.println("Phase 2 : Snaking");
+			phase ++;
+			state.agent_last_action = state.ACTION_SUCK;
+			return LIUVacuumEnvironment.ACTION_SUCK;
+		}
 	}
 
+	// Turn right function
+	private Action turnRight(DynamicPercept percept) {
+		System.out.println("BUM -> choosing TURN_RIGHT action!");
+		state.agent_direction = ((state.agent_direction+1) % 4);
+		if (state.agent_direction<0)
+			state.agent_direction +=4;
 
+		state.agent_last_action = state.ACTION_TURN_RIGHT;
+		return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
+	}
+
+	// Turn left function
+	private Action turnLeft(DynamicPercept percept){
+		System.out.println("BUM -> choosing TURN_LEFT action!");
+		state.agent_direction = ((state.agent_direction+1) % 4);
+		if (state.agent_direction<0)
+			state.agent_direction +=4;
+
+		state.agent_last_action = state.ACTION_TURN_LEFT;
+		return LIUVacuumEnvironment.ACTION_TURN_LEFT;
+	}
 
 	@Override
 	public Action execute(Percept percept) {
-
-
 		// DO NOT REMOVE this if condition!!!
     	if (initnialRandomActions>0) {
     		return moveToRandomStartPosition((DynamicPercept) percept);
@@ -189,24 +220,18 @@ class MyAgentProgram implements AgentProgram {
 			state.agent_last_action=state.ACTION_SUCK;
 	    	return LIUVacuumEnvironment.ACTION_SUCK;
     	}
-	while(isHome == false) {
-		return moveToHomePosition((DynamicPercept) percept);
-		
-	}
-		
-
     	// This example agent program will update the internal agent state while only moving forward.
     	// START HERE - code below should be modified!
+
+			while(phase == 1) {
+				return moveToHomePosition((DynamicPercept) percept);
+			}
 
     	System.out.println("x=" + state.agent_x_position);
     	System.out.println("y=" + state.agent_y_position);
     	System.out.println("dir=" + state.agent_direction);
 
-
 	    iterationCounter--;
-
-	   // if (iterationCounter==0)
-	    //	return NoOpAction.NO_OP;
 
 	    DynamicPercept p = (DynamicPercept) percept;
 	    Boolean bump = (Boolean)p.getAttribute("bump");
@@ -239,35 +264,65 @@ class MyAgentProgram implements AgentProgram {
 
 	    state.printWorldDebug();
 
-
 	    // Next action selection based on the percept value
-	    if (dirt)
-	    {
+
+			if (turning == true) {
+				System.out.println("Turning : movement " + movement);
+				if (movement == 1) {
+					movement++;
+					state.updateWorld(state.agent_x_position,state.agent_y_position,state.CLEAR);
+					state.agent_last_action = state.ACTION_MOVE_FORWARD;
+					return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+				}
+				else{
+
+					if (bump == true) {
+						phase = 1;
+						cleaned = true;
+						return turnRight((DynamicPercept)percept);
+					}
+					else{
+						movement = 0;
+						turning = false;
+						if (turningDirection == 0) {
+							return turnRight((DynamicPercept) percept);
+						}
+						else {
+
+							return turnLeft((DynamicPercept) percept);
+						}
+					}
+				}
+
+			}
+
+	    if (dirt) {
 	    	System.out.println("DIRT -> choosing SUCK action!");
 	    	state.agent_last_action=state.ACTION_SUCK;
 	    	return LIUVacuumEnvironment.ACTION_SUCK;
 	    }
 	    else
 	    {
-	    	if (bump)
-	    	{
-	    		
-			System.out.println("BUM -> choosing TURN_RIGHT action!");
-			state.agent_direction = ((state.agent_direction+1) % 4);
-			
-			if (state.agent_direction<0) 
-				state.agent_direction +=4;
-			state.agent_last_action = state.ACTION_TURN_RIGHT;
-			
-			return LIUVacuumEnvironment.ACTION_TURN_RIGHT;
-	    	}
-	    	else
-	    	{
-			state.agent_last_action=state.ACTION_MOVE_FORWARD;
-			return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
-	    	}
+				if (bump && state.agent_direction == 1){
+						System.out.println("Start RIGHT TURN 180");
+						turning = true;
+						movement++;
+						turningDirection = 0;
+
+						return turnRight((DynamicPercept)percept);
+				}
+				else if (bump && state.agent_direction == 3){
+						System.out.println("Start LEFT TURN 180");
+						turning = true;
+						movement++;
+						turningDirection = 1;
+						return turnLeft((DynamicPercept)percept);
+				}
+
+				state.agent_last_action = state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
 	    }
-	}
+		}
 }
 
 public class MyVacuumAgent extends AbstractAgent {
