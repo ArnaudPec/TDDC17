@@ -34,8 +34,6 @@ class MyAgentState
 	public static final int WEST = 3;
 	public int agent_direction = EAST;
 
-
-
 	MyAgentState()
 	{
 		for (int i=0; i < world.length; i++)
@@ -186,6 +184,7 @@ class MyAgentProgram implements AgentProgram {
 	}
 
 	// Turn right function
+	// Return an Action
 	private Action turnRight(DynamicPercept percept) {
 		System.out.println("BUM -> choosing TURN_RIGHT action!");
 		state.agent_direction = ((state.agent_direction+1) % 4);
@@ -197,9 +196,10 @@ class MyAgentProgram implements AgentProgram {
 	}
 
 	// Turn left function
+	// Return an Action
 	private Action turnLeft(DynamicPercept percept){
 		System.out.println("BUM -> choosing TURN_LEFT action!");
-		state.agent_direction = ((state.agent_direction+1) % 4);
+		state.agent_direction = ((state.agent_direction-1) % 4);
 		if (state.agent_direction<0)
 			state.agent_direction +=4;
 
@@ -266,35 +266,34 @@ class MyAgentProgram implements AgentProgram {
 
 	    // Next action selection based on the percept value
 
-			if (turning == true) {
-				System.out.println("Turning : movement " + movement);
-				if (movement == 1) {
-					movement++;
-					state.updateWorld(state.agent_x_position,state.agent_y_position,state.CLEAR);
-					state.agent_last_action = state.ACTION_MOVE_FORWARD;
-					return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+		if (turning == true) {
+			System.out.println("Turning : movement " + movement);
+			if (movement == 1) {
+				movement++;
+				state.updateWorld(state.agent_x_position,state.agent_y_position,state.CLEAR);
+				state.agent_last_action = state.ACTION_MOVE_FORWARD;
+				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
+			}
+			else{
+
+				if (bump == true) {
+					phase = 1;
+					cleaned = true;
+					return turnRight((DynamicPercept)percept);
 				}
 				else{
-
-					if (bump == true) {
-						phase = 1;
-						cleaned = true;
-						return turnRight((DynamicPercept)percept);
+					movement = 0;
+					turning = false;
+					if (turningDirection == 0) {
+						return turnRight((DynamicPercept) percept);
 					}
-					else{
-						movement = 0;
-						turning = false;
-						if (turningDirection == 0) {
-							return turnRight((DynamicPercept) percept);
-						}
-						else {
+					else {
 
-							return turnLeft((DynamicPercept) percept);
-						}
+						return turnLeft((DynamicPercept) percept);
 					}
 				}
-
 			}
+		}
 
 	    if (dirt) {
 	    	System.out.println("DIRT -> choosing SUCK action!");
@@ -322,7 +321,7 @@ class MyAgentProgram implements AgentProgram {
 				state.agent_last_action = state.ACTION_MOVE_FORWARD;
 				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
 	    }
-		}
+	}
 }
 
 public class MyVacuumAgent extends AbstractAgent {
