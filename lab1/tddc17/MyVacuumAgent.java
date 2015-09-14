@@ -1,5 +1,7 @@
-package tddc17;
+// Lab 1 : Intelligent Agents
+// Arnaud Pecoraro
 
+package tddc17;
 
 import aima.core.environment.liuvacuum.*;
 import aima.core.agent.Action;
@@ -97,18 +99,24 @@ class MyAgentProgram implements AgentProgram {
 	private int initnialRandomActions = 10;
 	private Random random_generator = new Random();
 
-	// Here you can define your variables!
+	public int iterationCounter = 10;
+	public MyAgentState state = new MyAgentState();
+
+	/**
+
+		uMovement : movement counter when turning 180°, please refer to the
+		isUTurning : boolean used to test if a u-turn (180) is performed
+		turningDirection : 0 ==> right, 1 ==> left, when turning 180°
+
+		isCleaned : to test if the grid is cleaned of its initial dirt
+	*/
 
 	public int phase = 1;
-	public int movement = 0;
-	public char turningDirection = 0; //0 ==> right, 1 ==> left
-	public Boolean turning = false;
-	public Boolean cleaned = false;
+	public int uMovement = 0;
+	public int turningDirection = 0;
 
-	public int iterationCounter = 10;
-	public int finalPositionY = 0;
-
-	public MyAgentState state = new MyAgentState();
+	public Boolean isUTurning = false;
+	public Boolean isCleaned = false;
 
 	// moves the Agent to a random start position
 	// uses percepts to update the Agent position - only the position, other percepts are ignored
@@ -132,9 +140,17 @@ class MyAgentProgram implements AgentProgram {
 		return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
 	}
 
-	// moves the Agent back to the home position
-	// use percepts as input to update the Agent position
-	// returns an action
+	/**
+	 moves the Agent back to the home position
+	 use percepts as input to update the Agent position
+	 returns an action
+
+	 Given that that the default home position is (1,1), this method initiate
+	 a sequence of actions ending up whith the agent on (1,1).
+	 At the end, if the world is not clean (refering to the boolean isCleaned) it
+	 initiates phase 2 : snaking.
+	**/
+
 	private Action moveToHomePosition(DynamicPercept percept) {
 
 		System.out.println("Going home.");
@@ -167,7 +183,7 @@ class MyAgentProgram implements AgentProgram {
 
 		System.out.println("Arrived at home.");
 
-		if (cleaned == true) {
+		if (isCleaned == true) {
 			System.out.println("Finished");
 			return NoOpAction.NO_OP;
 		}
@@ -186,7 +202,7 @@ class MyAgentProgram implements AgentProgram {
 	}
 
 	// Turn right function
-	// Return an Action
+	// Returns an Action
 	private Action turnRight(DynamicPercept percept) {
 		System.out.println("BUM -> choosing TURN_RIGHT action!");
 		state.agent_direction = ((state.agent_direction+1) % 4);
@@ -198,7 +214,7 @@ class MyAgentProgram implements AgentProgram {
 	}
 
 	// Turn left function
-	// Return an Action
+	// Returns an Action
 	private Action turnLeft(DynamicPercept percept){
 		System.out.println("BUM -> choosing TURN_LEFT action!");
 		state.agent_direction = ((state.agent_direction-1) % 4);
@@ -225,6 +241,9 @@ class MyAgentProgram implements AgentProgram {
     	// This example agent program will update the internal agent state while only moving forward.
     	// START HERE - code below should be modified!
 
+			// When the program start (phase1), the vacuum cleaner goes back to home
+			// Depending on the number of initial random actions, this choice can be
+			// arguable(Please refer to the report for more details)
 			while(phase == 1) {
 				return moveToHomePosition((DynamicPercept) percept);
 			}
@@ -258,7 +277,7 @@ class MyAgentProgram implements AgentProgram {
 					state.updateWorld(state.agent_x_position-1,state.agent_y_position,state.WALL);
 					break;
 				}
-	    } 
+	    }
 	    if (dirt)
 	    	state.updateWorld(state.agent_x_position,state.agent_y_position,state.DIRT);
 	    else
@@ -268,10 +287,16 @@ class MyAgentProgram implements AgentProgram {
 
 	    // Next action selection based on the percept value
 
-		if (turning == true) {
-			System.out.println("Turning : movement " + movement);
-			if (movement == 1) {
-				movement++;
+		/*
+		 This condition is use to continue an already initiated 180° turning
+		 sequence while the Vacuum cleaner is snaking during phase 2.
+		 When the sequence is almost over, the boolean isUTurning is set to false,
+		 the last turning is performed, and next turn the VC moves forward.
+		 */
+		if (isUTurning == true) {
+			System.out.println("Turning : uMovement " + uMovement);
+			if (uMovement == 1) {
+				uMovement++;
 				state.updateWorld(state.agent_x_position,state.agent_y_position,state.CLEAR);
 				state.agent_last_action = state.ACTION_MOVE_FORWARD;
 				return LIUVacuumEnvironment.ACTION_MOVE_FORWARD;
@@ -280,20 +305,17 @@ class MyAgentProgram implements AgentProgram {
 
 				if (bump == true) {
 					phase = 1;
-					cleaned = true;
-					finalPositionY  = state.agent_y_position;
-
+					isCleaned = true;
 					state.printWorldDebug();
 					return turnRight((DynamicPercept)percept);
 				}
 				else{
-					movement = 0;
-					turning = false;
+					uMovement = 0;
+					isUTurning = false;
 					if (turningDirection == 0) {
 						return turnRight((DynamicPercept) percept);
 					}
 					else {
-
 						return turnLeft((DynamicPercept) percept);
 					}
 				}
@@ -309,15 +331,15 @@ class MyAgentProgram implements AgentProgram {
 	    {
 				if (bump && state.agent_direction == 1){
 						System.out.println("Start RIGHT TURN 180");
-						turning = true;
-						movement++;
+						isUTurning = true;
+						uMovement++;
 						turningDirection = 0;
 						return turnRight((DynamicPercept)percept);
 				}
 				else if (bump && state.agent_direction == 3){
 						System.out.println("Start LEFT TURN 180");
-						turning = true;
-						movement++;
+						isUTurning = true;
+						uMovement++;
 						turningDirection = 1;
 						return turnLeft((DynamicPercept)percept);
 				}
