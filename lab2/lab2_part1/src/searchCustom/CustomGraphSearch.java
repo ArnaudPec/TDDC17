@@ -32,17 +32,32 @@ public class CustomGraphSearch implements SearchObject {
 
 		path = new ArrayList<SearchNode>();
 
+		/*
+		* The algorithm loops until path is returned, either with the goalState
+		* or an empty path which means it failed
+		*/
+
 		while(true){
+
+			/*
+			* If the frontier is empty, returns empty path (failure)
+			*/
 
 			if (frontier.isEmpty()){
 				System.out.println("Frontier is empty");
 				return path;
 				}
 
-			SearchNode currentNode = frontier.removeFirst();
-			System.out.println("currentNode is " +currentNode.getState().getX()+" " + currentNode.getState().getY()  );
+			SearchNode currentNode = frontier.removeFirst(); // pop the shallowest leaf
+
+			//System.out.println("currentNode is " +currentNode.getState().getX()+" " + currentNode.getState().getY()  );
+
+			/*
+			* Check the currentNode state is the goal state
+			* 	if it is true, return the path
+			* 	else the node is added to the explored set
+			*/
 			if (p.isGoalState(currentNode.getState())) {
-				System.out.println("Goal founded");
 				path = currentNode.getPathFromRoot();
 				return path;
 			}
@@ -50,14 +65,23 @@ public class CustomGraphSearch implements SearchObject {
 				explored.add(currentNode);
 			}
 
+			// Getting the childStates from the currentNode state
 			ArrayList<GridPos> childStates = p.getReachableStatesFrom(currentNode.getState());
 
+		/*
+		* Iterate over the childStates and insert the corresponding nodes to the
+		* frontier iff they are not already present in it or have already been
+		* explored (contained in the explored hash set)
+		*
+		* Depending on the implementation (BFS or DFS), nodes are added in front or
+		* back of the frontier (see report for more information)
+		*/
 			Iterator iter = childStates.iterator();
 			while(iter.hasNext()) {
 				SearchNode childNode = new SearchNode((GridPos)iter.next(), currentNode);
-			//	System.out.println(childNode.getState().getX() + " " + childNode.getState().getY());
 
 				if ((!explored.contains(childNode)) && (!frontier.contains(childNode))) {
+					//	System.out.println(childNode.getState().getX() + " " + childNode.getState().getY());
 					if (insertFront) {
 						frontier.addNodeToFront(childNode);
 					}
@@ -67,46 +91,7 @@ public class CustomGraphSearch implements SearchObject {
 				}
 			}
 
-
 		}
-
-		/*
-		loop do
-			if the frontier is empty then return failure
-
-			choose a leaf node and remove it from the frontier
-
-			if the node contains a goal state then return the corresponding solution
-			add the node to the explored set
-
-			expand the chosen node, adding the resulting nodes to the frontier
-			only if not in the frontier or explored set
-
-		*/
-
-		//path = node.getPathFromRoot();
-
-		/* Some hints:
-		 * -SearchNodes are the nodes of the search tree and contains the relevant problem state, in this case x,y position (GridPos) of the agent
-		 * --You can create a new search node from a state by: SearchNode childNode = new SearchNode(childState, currentNode);
-		 * --You can also extract the state by .getState() method
-		 * --All search structures use search nodes, but the problem object only speaks in state, so you may need to convert between them
-		 *
-		 * -The frontier is a queue of search nodes, open this class to find out what you can do with it!
-		 *
-		 * -If you are unfamiliar with Java, the "HashSet<SearchNode>" used for the explored set means a set of SearchNode objects.
-		 * --You can add nodes to the explored set, or check if it contains a node!
-		 *
-		 * -To get the child states (adjacent grid positions that are not walls) of a particular search node, do: ArrayList<GridPos> childStates = p.getReachableStatesFrom(currentState);
-		 *
-		 * -Depending on the addNodesToFront boolean variable, you may need to do something with the frontier... (see book)
-		 *
-		 * -You can check if you have reached the goal with p.isGoalState(NodeState)
-		 *
-		 *  When the goal is found, the path to be returned can be found by: path = node.getPathFromRoot();
-		 */
-		/* Note: Returning an empty path signals that no path exists */
-	//	return path;
 	}
 
 	public ArrayList<SearchNode> getPath() {
