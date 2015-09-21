@@ -104,9 +104,131 @@ and the goal node. The cost function \textbf{g(n)} could be the total ammount of
 from the start position to the current node. Given the definition, it would be
 an admissible heuristic.
 
+\newpage
+\thispagestyle{empty}
+
 \textit{\textbf{5. Draw and explain. Choose your three favorite search algorithms and apply them to any problem domain (it might be a good idea to use a domain where you can identify a good heuristic function). Draw the search tree for them, and explain how they proceed in the searching. Also include the memory usage. You can attach a hand-made drawing.}}
 
-\textit{\textbf{6. Look at all the offline search algorithms presented in chapter 3 plus A* search. Are they complete? Are they optimal? Explain why!}}
+Assuming that we have the following graph, we want to find the shortest path to go
+from A to F.
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[width=.38\linewidth,scale=1]{./images/graph.jpg} & \includegraphics[width=.36\linewidth, scale=1.5]{./images/table.png} \\
+      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
+    \end{tabular}
+    \caption{Q5 : Sample graph problem (a) Graph - (b) Distance table \label{fig:Graph and table}}
+\end{figure}
+
+\paragraph{Breadth First Search}
+
+BFS explores the tree level by level and always expand to the shallowest
+node in the frontier.
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[width=.54\linewidth,scale=1]{./images/bfs.jpg} & \includegraphics[width=.29  \linewidth, scale=1.5]{./images/bfs_table.jpg} \\
+      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
+    \end{tabular}
+    \caption{BFS (a) Search - (b) Step table \label{fig:BFS}}
+\end{figure}
+
+For each child of the expanded node, BFS tests if this child is not in already
+explored or in the frontier. If not it tests if this child state is the goal
+state. If this statement is true, it returns the solution.
+In this case the algorithm stops just before the red square \textit{Figure 3.b}.
+
+As far as memory is concerned, every node is stored either in the frontier or explored
+list. The branching factor \textit{b} is 1$\leq b \leq$3 and the goal depth \textit{d} is 2.
+The space complexity $O(b^d) \approx O(3^2)$.
+
+\paragraph{Depth First Search}
+
+DFS explores the tree branch by branch, expanding to the first child node,
+deeper and deeper until a goal is found or a node has no children.
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[width=.54\linewidth,scale=1]{./images/dfs.jpg} & \includegraphics[width=.29  \linewidth, scale=1.5]{./images/dfs_table.png} \\
+      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
+    \end{tabular}
+    \caption{DFS (a) Search - (b) Step table \label{fig:DFS}}
+\end{figure}
+
+We can easly notice that DFS is not optimal, the solution returned \textit{Figure 4}
+is not the shortest path : path cost equal to
+$3>2$ on the branch A-E-F.
+
+The space complexity is equal to $O(bd) \approx O(3*2)$, which is less than BFS.
+\thispagestyle{empty}
+
+\paragraph{A* Search}
+
+This algorithm is based on informed search.
+A good heuristic \textit{h(n)} is the straight line between the goal and
+the current node. The cost function \textit{g(n)} is the total cost from the start
+to the current node.
+
+\textit{Figure 2.b} is used to compute the algorithm. The function
+$f(n)=h(n)+g(n)$ after an expansion for each child node to always select the
+cheapest path.
+
+\begin{figure}[h]
+    \centering
+      \includegraphics[width=.73\linewidth,scale=1]{./images/astar.jpg} \\
+    \caption{A* Search \label{fig:Astar}}
+\end{figure}
+
+In the worst case, the space complexity is $O(b^d)$.
+\newpage
+
+\textit{\textbf{6. Look at all the offline search algorithms presented in chapter 3 plus A* search.
+Are they complete? Are they optimal? Explain why!}}
+
+\paragraph{Breadth First Search}
+
+Breadth first search is complete if the number of node is finite. Indeed all nodes
+will be visited, so eventually it will find a solution. However it is only optimal
+if the cost of each step is the same because the shallowest node is not always
+the least cost solution.
+
+\paragraph{Uniform Cost Search}
+
+Since UCS is based on BFS but with a priority queue instead of the FIFO queue and
+expand to the lowest path cost node, it is both complete and optimal.
+
+\paragraph{Depth First Search}
+
+DFS is not complete (Tree Version) is not complete because it can loop infinitely
+on one branch and therefore never find a solution. It is also not optimal because it
+will always return the first solution found, even if a lower cost solution exists.
+
+\paragraph{Depth-limited search}
+
+The idea is to limit the depth to solves infinite-path problem. However if the goal
+is beyond the limit, the algorithm will never return a solution. Therefore it is
+not complete.
+For the same reasons as DFS, it is also not optimal.
+
+\paragraph{Iterative Deepening Depth First Search}
+
+This algoroithm simply use Depth-limited search but with a increasing depth limit
+until a solution is found. Like BFS it is complete if the branching factor b is
+finite. It is optimal if each step cost is the same.
+
+\paragraph{Bidirectionnal}
+
+The Bidirectionnal search is only optimal and complete when BFS is used on both side
+with all step costs equals. However it is not applicable very often.
+
+\paragraph{A* Search}
+
+A* is complete in finite space but its optimality depends on the chosen heuristic.
+If the heuristic is admissible (never overestimates the cost to reach the goal)
+ and consistent, it is optimal.
 
 \textit{\textbf{7. Assume that you had to go back and do lab 1 once more, but this time with obstacles. Remember that the agent did not have perfect knowledge of the environment but had to explore it incrementally. Could you still use the search algorithms you have learned to guide the agent's execution? What would you search for? Give an example.}}
 
@@ -120,3 +242,4 @@ and suck the dirt when necessary.
 
 Finally to reach start position, after the environment is fully discovered,
 we could use an heuristic algorithm, for example A*.
+\thispagestyle{empty}
