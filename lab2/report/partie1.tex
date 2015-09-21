@@ -1,4 +1,4 @@
-\section{Implementing CustomGraphSearch}
+  \section{Implementing CustomGraphSearch}
  %\setcounter{page}{2}
  %\addtocounter{section}{1}
  \thispagestyle{empty}
@@ -68,31 +68,55 @@ time and space complexity.
 
 \newpage
 \thispagestyle{empty}
-\section{Theory : questions}
+\section{Theory : questions \\ }
 
-\textit{1. In the vacuum cleaner domain in part 1, what were the states and actions? What is the branching factor?}
+\textit{\textbf{1. In the vacuum cleaner domain in part 1, what were the states and actions? What is the branching factor?}}
 
-In the domain part 1, each square of the grid is a state.
-Actions ?
-The branching factor \textbf{b} is 8.
+In the domain part 1, each square of the grid is a state, which can be clean
+or with dirt.The initial state is \textit{In(1,1)}, the starting point in
+the grid.The goal state is the position of a square filled with dirt.
+In a given state, the possible actions are \textit{suck} and \textit{move} (up,
+down, right or left).
+The branching factor \textbf{b} is 4 in this domain.
 
-\textit{2. What is the difference between Breadth First Search and Uniform Cost Search in a domain where the cost of each action is 1?}
+\textit{\textbf{2. What is the difference between Breadth First Search and Uniform Cost Search in a domain where the cost of each action is 1?}}
 
-In a domain where the cost of each action is 1, there is no difference between
-BFS and Uniform Cost search because every priority is equal to 1.
+%We know that BFS is optimal if all step-costs are the same.
+%In a domain where the cost of each action is 1, there is no difference between
+%BFS and Uniform Cost search because every priority is equal to 1.
 
-\textit{3. Suppose that h1 and h2 are admissible heuristics (used in for example A*). Which of the following are also admissible?}
+In a domain where the cost of each action is 1, the difference between
+breadth-first search and uniform-cost search is that BFS stops as soon as it
+find the goal. On the other hand, uniform-cost search still examines all the other
+nodes at the goal's depth to find a lower cost solution.
+
+\textit{\textbf{3. Suppose that h1 and h2 are admissible heuristics (used in for example A*). Which of the following are also admissible?}}
 
 An admissible heuristic never over estimate the cost to reach the goal from n.
 Given that h1(n) and h2(n) are admissible, \textbf{(h1+h2)/2} and \textbf{max (h1,h2)}
 are also admissible.
 
-\textit{4. If one would use A* to search for a path to one specific square in the vacuum domain, what could the heuristic (h) be? The cost function (g)? Is it an admissible heuristic?}
+\textit{\textbf{4. If one would use A* to search for a path to one specific square in the vacuum domain, what could the heuristic (h) be? The cost function (g)? Is it an admissible heuristic?}}
 
+An admissible heuristic never overestimates the cost to reach the goal. Therefore
+a possible \textbf{h(n)} could be the Manhattan distance between the current node
+and the goal node. The cost function \textbf{g(n)} could be the total ammount of step
+from the start position to the current node. Given the definition, it would be
+an admissible heuristic.
 
+\textit{\textbf{5. Draw and explain. Choose your three favorite search algorithms and apply them to any problem domain (it might be a good idea to use a domain where you can identify a good heuristic function). Draw the search tree for them, and explain how they proceed in the searching. Also include the memory usage. You can attach a hand-made drawing.}}
 
-\textit{5. Draw and explain. Choose your three favorite search algorithms and apply them to any problem domain (it might be a good idea to use a domain where you can identify a good heuristic function). Draw the search tree for them, and explain how they proceed in the searching. Also include the memory usage. You can attach a hand-made drawing.}
+\textit{\textbf{6. Look at all the offline search algorithms presented in chapter 3 plus A* search. Are they complete? Are they optimal? Explain why!}}
 
-\textit{6. Look at all the offline search algorithms presented in chapter 3 plus A* search. Are they complete? Are they optimal? Explain why!}
+\textit{\textbf{7. Assume that you had to go back and do lab 1 once more, but this time with obstacles. Remember that the agent did not have perfect knowledge of the environment but had to explore it incrementally. Could you still use the search algorithms you have learned to guide the agent's execution? What would you search for? Give an example.}}
 
-\textit{7. Assume that you had to go back and do lab 1 once more, but this time with obstacles. Remember that the agent did not have perfect knowledge of the environment but had to explore it incrementally. Could you still use the search algorithms you have learned to guide the agent's execution? What would you search for? Give an example.}
+If we had to redo lab 1 but with obstacles, we could implement a search algorithm.
+However, given that the agent has no knowledge of the environment when it starts,
+it would not be possible to use heuristic search. In fact we would have to use
+uninformed search algorithms.
+
+The objective of this search would be to cross the world until every square is explored,
+and suck the dirt when necessary.
+
+Finally to reach start position, after the environment is fully discovered,
+we could use an heuristic algorithm, for example A*.
