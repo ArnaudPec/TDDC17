@@ -1,245 +1,220 @@
-  \section{Implementing CustomGraphSearch}
+  \section*{Part 2 : Inference in an existing Bayesian network}
  %\setcounter{page}{2}
  %\addtocounter{section}{1}
  \thispagestyle{empty}
-\subsection{Aim}
 
-This second lab session explores the concept of graph search algorithms. The
-agent is still a Vacuum cleaner evolving in a simple grid.
-Each square of that grid is either clean filled with dirt, or a wall.
-The vacuum cleaner uses search algorithm to locate the dirt squares.
-The purpose of this lab is to write our own implementation of
-\textit{Breadth First Search} and \textit{Depth First Search} algorithms which
-inherit from a \textit{CustomGraphSearch} class.
+This third lab session explores the concept of Bayesian Networks.
 
-Using the Java GUI included in the project files, it is possible to compare the
-efficiency of differents search algorithms : BFS, DFS, IDS, A*.
+\subsection*{Questions}
 
-%\begin{itemize}
-%  \item Turning 90° in the given direction (\textit{uMovement equal to 0})
-%  \item Moving forward, down to the next grid line (\textit{uMovement equal to 1})
-%  \item Turning again in the same direction (\textit{uMovement equal to 0 again})
-%\end{itemize}
 
-\subsection{Implementation}
+\textit{\textbf{a) What is the risk of melt-down in the power plant during a day if no
+observations have been made? What if there is icy weather?}}
 
-Given that the course book and the slides provide us with pseudo code of those
-algorithms, \textit{figures 3.7 and 3.11}, it is almost only necessary to translate it in Java.
+If no observation has been made, the risk of melt-down in the power plant is
+equal to \textbf{0.02578}. If there is icy weather it rises to \textbf{0.03472}.
 
-The CustomDepthFirstSearch and CustomBreadthFirstSearch both inherit from
-CustomGraphSearch. In terms of pseudo code the only difference between
-them is the handling of the \textit{frontier}. Indeed this collection is a
-\textit{LIFO} in DFS while a \textit{FIFO} in BFS. The skeleton provide us with
-a very simple way of dealing with this issue. Thanks to the boolean \textit{insertFront},
-it is possible to add nodes in the front or in the back of the queue depending
-on the algorithm, and therefore simulate a LIFO and FIFO.
+\textit{\textbf{b) Suppose that both warning sensors indicate failure. What is the risk
+of a meltdown in that case? Compare this result with the risk of a melt-down
+when there is an actual pump failure and water leak. What is the difference?
+The answers must be expressed as conditional probabilities of the observed
+variables, $P(Meltdown|...)$.}}
 
-Thus, to create a CustomBreadthFirstSearch object, the constructor just call the
-superclass with \textit{insertFront} being false :
-\begin{verbatim}
-   super(false); // The BFS uses a fifo, insertFront is false
-\end{verbatim}
+$P(Meltdown| PumpFailureWar \bigcap WaterLeakWar) = 0.14535$
 
-In the main loop while expanding the currentNode, this boolean is tested before
-adding the resulting nodes to the frontier.
+$P(Meltdown| PumpFailure \bigcap WaterLeak) = 0.2$
 
-Each turn the choosen node is tested, if its state match the goalState, the
-full path is returned. If the frontier is empty an empty path is returned, the
-algorithm failed. Please refer to the code and comments for more details.
+The probability of having a meltdown whent there is a pump failure and a water
+leak is higher.
 
-The \textit{Figure 1} presents the result of the two implementations compared
-to the built-in DFS and BFS algorithms. The results are almost similar in terms of
-time and space complexity.
+\textit{\textbf{c) The conditional probabilities for the stochastic variables are often
+estimated by repeated experiments or observations. Why is it sometimes very
+difficult to get accurate numbers for these? What conditional probabilities
+in the model of the plant do you think are difficult or impossible to estimate?}}
+
+It is challenging to measure precisely the effect of each parameter taken separately
+from the others on a given event. Furthermore some parameters are simply not
+quantifiable, for example \textit{IcyWeather}. Is this relative to the temperature ?
+The humidity rate? The pressure ? In this problem we have no proper definition,
+therefore it is impossible to estimate.
+
+\textit{\textbf{d) Assume that the "IcyWeather" variable is changed to a more accurate
+"Temperature" variable instead (don't change your model). What are the different
+ alternatives for the domain of this variable? What will happen with the
+ probability distribution of P(WaterLeak | Temperature) in each alternative? }}
+
+The domain will have more possible states. Instead of having simply IcyWeather true or
+false based on unknown parameters, the temperature will be represented as a
+number (e.g. 3°C) or as a range of temperature (e.g. 5-10°C).
+
+ %The domain decreases in size of possible states as for example precipitation
+ %and wind is no longer a part of the estimations. The temperature will be
+ %represented as an absolute number or intervals, instead of just true or false.
+  %Resulting in a lot more defining of the probabilities of the child nodes with
+  %aspect to each value/interval of temperature.
+
+%-------------------------------------------------------------------------------
+
+
+\newpage
+\thispagestyle{empty}
+
+\textit{\textbf{a) What does a probability table in a Bayesian network represent?}}
+
+The probability table shows the probability of each possible state of a node given
+the states of the parent nodes.
+
+\textit{\textbf{b) What is a joint probability distribution? Using the chain
+rule on the structure of the Bayesian network to rewrite the joint distribution
+as a product of P(child|parent) expressions, calculate manually the particular
+entry in the joint distribution of P(Meltdown=F, PumpFailureWarning=F,
+PumpFailure=F, WaterLeakWaring=F, WaterLeak=F, IcyWeather=F).
+Is this a common state for the nuclear plant to be in?}}
+
+The chain rule provide us with the following equation
+
+$P(everything false) = P(IW) * P(PF) * P(PW | PF) * P(MD | PF, WL) * P(WL | IW) * P(WLW | WL)$
+
+\hspace{7em}$= 0,95 * 0,9 * 0,95 * 1 * 0,9 * 0,95 = 0,69$
+
+Yes this is a common state for the nuclear plant.
+
+\textit{\textbf{c) What is the probability of a meltdown if you know that there
+is both a water leak and a pump failure? Would knowing the state of any other
+ variable matter? Explain your reasoning!}}
+
+$P(Meltdown | PumpFailure \bigcap WaterLeak ) = 0,8$
+
+No other variables matter.
+When all the parents values are observed they alone determine the child value.
+
+
+\textit{\textbf{d) Calculate manually the probability of a meltdown when you
+happen to know that PumpFailureWarning=F, WaterLeak=F, WaterLeakWarning=F and
+ IcyWeather=F but you are not really sure about a pump failure.
+    Hint: Use the Exact Inference formula near the end of the slides,
+or in sec. 14.4.1 in the book. This formula includes both conditioning
+on the variables you know (evidence) and marginalizing (summing) over the
+variable(s) you do not know (often called unobserved or hidden). You need
+to calculate this both for P(Meltdown=T|...) and P(Meltdown=F|..) and normalize
+them so that they sum to 1. This normalization factor is the alpha symbol in
+the equation. With this formula you could answer any query in the network,
+though it will be impractical for cases with many unobserved variables. A
+suggestion is to move the terms that do not involve the pump failure variable
+out of the sum over the two states pump failure can be in (T/F). You may use
+inference in the applet for verification purposes, but small differences
+is expected due to rounding errors.}}
+
+
+The chain rule provide us with the following equation
+
+$P(MD = T | PF unsure,  everything else false)$
+
+$= P(IW) * P(WL | IW) * P(WLW | WL)* [P(PF=T) * P(PW | PF=T) * P(MD=T | PF=T,WL) + P(PF=F) * P(PW | PF=F) * P(MD=T | PF=F,WL)]$
+
+$= 0,95 * 0,9 * 0,95 * (0,1 * 0,1 * 0,16 + 0,9 * 0,95 * 0,01) = 0,008$ (1)
+
+$P(MD=F | PF unsure,  everything else false)$
+
+$=P(IW) * P(WL | IW) * P(WLW | WL)* [P(PF=T) * P(PW | PF=T) * P(MD=F | PF=T,WL) + P(PF=F) * P(PW | PF=F) * P(MD=F | PF=F,WL)]$
+
+$= 0,95 * 0,9 * 0,95 * (0,1 * 0,1 * 0,84 + 0,9 * 0,95 * 0,99) =0,694$ (2)
+
+$(1) and (2) => \alpha = 1 / (0,008 + 0,69) = 1,42 $
+
+$(1) 0,008 * 1,42 = 0,012 $
+
+$(2) 0,694 * 1,42 = 0,988 $
+
+
+
+%------------------------------------------------------------------------------
+
+\newpage
+\thispagestyle{empty}
+\section*{Part 3 : Extending a network}
+
+\textit{\textbf{During the lunch break, the owner tries to show off for his
+employees by demonstrating the many features of his car stereo.
+To everyone's disappointment, it doesn't work. How did the owner's
+chances of surviving the day change after this observation?}}
+
+With the assumption that the radio does not work, the probability of survival
+is \textbf{$P(Survives)=0.98116$} which is less than the probability of survival without making any
+observation on the radio, \textbf{$P(Survives)=0.99001$}.
+
+\textit{\textbf{The owner buys a new bicycle that he brings to work every day.
+The bicycle has the following properties:
+P(bicycle\_works) = 0.9
+$P(survives | ¬moves \bigcap melt-down \bigcap bicycle\_works) = 0.6$
+$P(survives | moves \bigcap melt-down \bigcap bicycle\_works) = 0.9$
+How does the bicycle change the owner's chances of survival?}}
+
+With the addition of the bicycle to the network, the probability of survival
+increases slightly $P(Survives)=0.99505$.
+
+\textit{\textbf{It is possible to model any function in propositional
+logic with Bayesian Networks. What does this fact say about the complexity
+of exact inference in Bayesian Networks? What alternatives are there
+to exact inference?}}
+
+
+
+\newpage
+\thispagestyle{empty}
+\section*{Part 4 : More extensions}
 
 \begin{figure}[h]
     \centering
-    \begin{tabular}{cc}
-      \includegraphics[width=.46\linewidth,scale=1]{./images/lab2_bfs.png} & \includegraphics[width=.36\linewidth, scale=1.5]{./images/lab2_dfs.png} \\
-      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
-    \end{tabular}
-    \caption{Comparison between built-in and custom implementation (a) BFS - (b) DFS \label{fig:BFS and DFS}}
+      \includegraphics[width=0.83\linewidth]{./images/lab3.png}
+    \caption{Adding Mr H.S.\label{graph}}
 \end{figure}
+
+With the addition of Mr H.S. to the network, the probability of survival
+increases slightly $P(Survives)=0.99522$.
+
+With the observation of Meltdown and Reacts, $P(Survives)=0.82104$.
+
+\textit{\textbf{The owner had an idea that instead of employing a safety person,
+to replace the pump with a better one. Is it possible, in your model, to
+compensate for the lack of Mr H.S.'s expertise with a better pump?}}
+
+Without Mr H.S. it is possible to achieve the same probability of survival by
+decreasing the probability of PumpFailure by only 1%.
+
+\textit{\textbf{Mr H.S. fell asleep on one of the plant's couches.
+ When he wakes up he hears someone scream: "There is one or more warning
+ signals beeping in your control room!". Mr H.S. realizes that he does not
+ have time to fix the error before it is to late (we can assume that he wasn't
+  in the control room at all). What is the chance of survival for Mr H.S. if he
+   has a car with the same properties as the owner? Hint: This question involves
+    a disjunction (A or B) which can not be answered by querying the network
+    as is. How could you answer such questions? Maybe something could be added
+    or modified in the network.}}
+
+\textit{\textbf{What unrealistic assumptions do you make when creating a
+Bayesian Network model of a person?}}
+
+We make the assumption that human actions are predictable. Furthermore, we do not
+consider the gain of experience which would modify the probabilities, for exemple
+Mr H.S. will be less incompetent.
+
+\textit{\textbf{Describe how you would model a more dynamic world where for
+ example the "IcyWeather" is more likely to be true the next day if it was
+ true the day before. You only have to consider a limited sequence of days.}}
+
+We would have to add nodes representing the weather of the previous days.
+The node representing the previous day should have more impact on IcyWeather that
+the day before and so on until the last weather saved.
 
 %\begin{figure}[h]
 %    \centering
-    %  \includegraphics[width=0.83\linewidth]{./images/lab_1.png}
-  %  \caption{Screenshot\label{Vacuum cleaner}}
+  %  \begin{tabular}{cc}
+      %\includegraphics[width=.46\linewidth,scale=1]{./images/lab2_bfs.png} & \includegraphics[width=.36\linewidth, scale=1.5]{./images/lab2_dfs.png} \\
+  %    \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
+  %  \end{tabular}
+  %  \caption{Comparison between built-in and custom implementation (a) BFS - (b) DFS \label{fig:BFS and DFS}}
 %\end{figure}
 
 \newpage
-\thispagestyle{empty}
-\section{Theory : questions \\ }
-
-\textit{\textbf{1. In the vacuum cleaner domain in part 1, what were the states and actions? What is the branching factor?}}
-
-In the domain part 1, each square of the grid is a state, which can be clean
-or with dirt.The initial state is \textit{In(1,1)}, the starting point in
-the grid.The goal state is the position of a square filled with dirt.
-In a given state, the possible actions are \textit{suck} and \textit{move} (up,
-down, right or left).
-The branching factor \textbf{b} is 4 in this domain.
-
-\textit{\textbf{2. What is the difference between Breadth First Search and Uniform Cost Search in a domain where the cost of each action is 1?}}
-
-%We know that BFS is optimal if all step-costs are the same.
-%In a domain where the cost of each action is 1, there is no difference between
-%BFS and Uniform Cost search because every priority is equal to 1.
-
-In a domain where the cost of each action is 1, the difference between
-breadth-first search and uniform-cost search is that BFS stops as soon as it
-find the goal. On the other hand, uniform-cost search still examines all the other
-nodes at the goal's depth to find a lower cost solution.
-
-\textit{\textbf{3. Suppose that h1 and h2 are admissible heuristics (used in for example A*). Which of the following are also admissible?}}
-
-An admissible heuristic never over estimate the cost to reach the goal from n.
-Given that h1(n) and h2(n) are admissible, \textbf{(h1+h2)/2} and \textbf{max (h1,h2)}
-are also admissible.
-
-\textit{\textbf{4. If one would use A* to search for a path to one specific square in the vacuum domain, what could the heuristic (h) be? The cost function (g)? Is it an admissible heuristic?}}
-
-An admissible heuristic never overestimates the cost to reach the goal. Therefore
-a possible \textbf{h(n)} could be the Manhattan distance between the current node
-and the goal node. The cost function \textbf{g(n)} could be the total ammount of step
-from the start position to the current node. Given the definition, it would be
-an admissible heuristic.
-
-\newpage
-\thispagestyle{empty}
-
-\textit{\textbf{5. Draw and explain. Choose your three favorite search algorithms and apply them to any problem domain (it might be a good idea to use a domain where you can identify a good heuristic function). Draw the search tree for them, and explain how they proceed in the searching. Also include the memory usage. You can attach a hand-made drawing.}}
-
-Assuming that we have the following graph, we want to find the shortest path to go
-from A to F.
-
-\begin{figure}[h]
-    \centering
-    \begin{tabular}{cc}
-      \includegraphics[width=.38\linewidth,scale=1]{./images/graph.jpg} & \includegraphics[width=.36\linewidth, scale=1.5]{./images/table.png} \\
-      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
-    \end{tabular}
-    \caption{Q5 : Sample graph problem (a) Graph - (b) Distance table \label{fig:Graph and table}}
-\end{figure}
-
-\paragraph{Breadth First Search}
-
-BFS explores the tree level by level and always expand to the shallowest
-node in the frontier.
-
-\begin{figure}[h]
-    \centering
-    \begin{tabular}{cc}
-      \includegraphics[width=.54\linewidth,scale=1]{./images/bfs.jpg} & \includegraphics[width=.29  \linewidth, scale=1.5]{./images/bfs_table.jpg} \\
-      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
-    \end{tabular}
-    \caption{BFS (a) Search - (b) Step table \label{fig:BFS}}
-\end{figure}
-
-For each child of the expanded node, BFS tests if this child is not in already
-explored or in the frontier. If not it tests if this child state is the goal
-state. If this statement is true, it returns the solution.
-In this case the algorithm stops just before the red square \textit{Figure 3.b}.
-
-As far as memory is concerned, every node is stored either in the frontier or explored
-list. The branching factor \textit{b} is 1$\leq b \leq$3 and the goal depth \textit{d} is 2.
-The space complexity $O(b^d) \approx O(3^2)$.
-
-\paragraph{Depth First Search}
-
-DFS explores the tree branch by branch, expanding to the first child node,
-deeper and deeper until a goal is found or a node has no children.
-
-\begin{figure}[h]
-    \centering
-    \begin{tabular}{cc}
-      \includegraphics[width=.54\linewidth,scale=1]{./images/dfs.jpg} & \includegraphics[width=.29  \linewidth, scale=1.5]{./images/dfs_table.png} \\
-      \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
-    \end{tabular}
-    \caption{DFS (a) Search - (b) Step table \label{fig:DFS}}
-\end{figure}
-
-We can easly notice that DFS is not optimal, the solution returned \textit{Figure 4}
-is not the shortest path : path cost equal to
-$3>2$ on the branch A-E-F.
-
-The space complexity is equal to $O(bd) \approx O(3*2)$, which is less than BFS.
-\thispagestyle{empty}
-
-\paragraph{A* Search}
-
-This algorithm is based on informed search.
-A good heuristic \textit{h(n)} is the straight line between the goal and
-the current node. The cost function \textit{g(n)} is the total cost from the start
-to the current node.
-
-\textit{Figure 2.b} is used to compute the algorithm. The function
-$f(n)=h(n)+g(n)$ after an expansion for each child node to always select the
-cheapest path.
-
-\begin{figure}[h]
-    \centering
-      \includegraphics[width=.73\linewidth,scale=1]{./images/astar.jpg} \\
-    \caption{A* Search \label{fig:Astar}}
-\end{figure}
-
-In the worst case, the space complexity is $O(b^d)$.
-\newpage
-
-\textit{\textbf{6. Look at all the offline search algorithms presented in chapter 3 plus A* search.
-Are they complete? Are they optimal? Explain why!}}
-
-\paragraph{Breadth First Search}
-
-Breadth first search is complete if the number of node is finite. Indeed all nodes
-will be visited, so eventually it will find a solution. However it is only optimal
-if the cost of each step is the same because the shallowest node is not always
-the least cost solution.
-
-\paragraph{Uniform Cost Search}
-
-Since UCS is based on BFS but with a priority queue instead of the FIFO queue and
-expand to the lowest path cost node, it is both complete and optimal.
-
-\paragraph{Depth First Search}
-
-DFS is not complete (Tree Version) is not complete because it can loop infinitely
-on one branch and therefore never find a solution. It is also not optimal because it
-will always return the first solution found, even if a lower cost solution exists.
-
-\paragraph{Depth-limited search}
-
-The idea is to limit the depth to solves infinite-path problem. However if the goal
-is beyond the limit, the algorithm will never return a solution. Therefore it is
-not complete.
-For the same reasons as DFS, it is also not optimal.
-
-\paragraph{Iterative Deepening Depth First Search}
-
-This algoroithm simply use Depth-limited search but with a increasing depth limit
-until a solution is found. Like BFS it is complete if the branching factor b is
-finite. It is optimal if each step cost is the same.
-
-\paragraph{Bidirectionnal}
-
-The Bidirectionnal search is only optimal and complete when BFS is used on both side
-with all step costs equals. However it is not applicable very often.
-
-\paragraph{A* Search}
-
-A* is complete in finite space but its optimality depends on the chosen heuristic.
-If the heuristic is admissible (never overestimates the cost to reach the goal)
- and consistent, it is optimal.
-
-\textit{\textbf{7. Assume that you had to go back and do lab 1 once more, but this time with obstacles. Remember that the agent did not have perfect knowledge of the environment but had to explore it incrementally. Could you still use the search algorithms you have learned to guide the agent's execution? What would you search for? Give an example.}}
-
-If we had to redo lab 1 but with obstacles, we could implement a search algorithm.
-However, given that the agent has no knowledge of the environment when it starts,
-it would not be possible to use heuristic search. In fact we would have to use
-uninformed search algorithms.
-
-The objective of this search would be to cross the world until every square is explored,
-and suck the dirt when necessary.
-
-Finally to reach start position, after the environment is fully discovered,
-we could use an heuristic algorithm, for example A*.
 \thispagestyle{empty}
