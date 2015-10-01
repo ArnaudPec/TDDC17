@@ -11,6 +11,8 @@ This third lab session explores the concept of Bayesian Networks.
 \textit{\textbf{a) What is the risk of melt-down in the power plant during a day if no
 observations have been made? What if there is icy weather?}}
 
+\vspace{1em}
+
 If no observation has been made, the risk of melt-down in the power plant is
 equal to \textbf{0.02578}. If there is icy weather it rises to \textbf{0.03472}.
 
@@ -20,9 +22,11 @@ when there is an actual pump failure and water leak. What is the difference?
 The answers must be expressed as conditional probabilities of the observed
 variables, $P(Meltdown|...)$.}}
 
-$P(Meltdown| PumpFailureWar \bigcap WaterLeakWar) = 0.14535$
+\vspace{1em}
 
-$P(Meltdown| PumpFailure \bigcap WaterLeak) = 0.2$
+$P(Meltdown| PumpFailureWar,WaterLeakWar) = 0.14535$
+
+$P(Meltdown| PumpFailure,WaterLeak) = 0.2$
 
 The probability of having a meltdown whent there is a pump failure and a water
 leak is higher.
@@ -31,6 +35,9 @@ leak is higher.
 estimated by repeated experiments or observations. Why is it sometimes very
 difficult to get accurate numbers for these? What conditional probabilities
 in the model of the plant do you think are difficult or impossible to estimate?}}
+
+\vspace{1em}
+
 
 It is challenging to measure precisely the effect of each parameter taken separately
 from the others on a given event. Furthermore some parameters are simply not
@@ -43,15 +50,11 @@ therefore it is impossible to estimate.
  alternatives for the domain of this variable? What will happen with the
  probability distribution of P(WaterLeak | Temperature) in each alternative? }}
 
+ \vspace{1em}
+
 The domain will have more possible states. Instead of having simply IcyWeather true or
 false based on unknown parameters, the temperature will be represented as a
 number (e.g. 3°C) or as a range of temperature (e.g. 5-10°C).
-
- %The domain decreases in size of possible states as for example precipitation
- %and wind is no longer a part of the estimations. The temperature will be
- %represented as an absolute number or intervals, instead of just true or false.
-  %Resulting in a lot more defining of the probabilities of the child nodes with
-  %aspect to each value/interval of temperature.
 
 %-------------------------------------------------------------------------------
 
@@ -61,8 +64,11 @@ number (e.g. 3°C) or as a range of temperature (e.g. 5-10°C).
 
 \textit{\textbf{a) What does a probability table in a Bayesian network represent?}}
 
+\vspace{1em}
+
 The probability table shows the probability of each possible state of a node given
 the states of the parent nodes.
+
 
 \textit{\textbf{b) What is a joint probability distribution? Using the chain
 rule on the structure of the Bayesian network to rewrite the joint distribution
@@ -71,11 +77,13 @@ entry in the joint distribution of P(Meltdown=F, PumpFailureWarning=F,
 PumpFailure=F, WaterLeakWaring=F, WaterLeak=F, IcyWeather=F).
 Is this a common state for the nuclear plant to be in?}}
 
+\vspace{1em}
+
 The chain rule provide us with the following equation
 
-$P(everything false) = P(IW) * P(PF) * P(PW | PF) * P(MD | PF, WL) * P(WL | IW) * P(WLW | WL)$
+$P(everything false) = P(IW).P(PF).P(PFW|PF).P(MD|PF, WL).P(WL|IW).P(WLW|WL)$
 
-\hspace{7em}$= 0,95 * 0,9 * 0,95 * 1 * 0,9 * 0,95 = 0,69$
+\hspace{9em}$= 0,95 * 0,9 * 0,95 * 1 * 0,9 * 0,95 = 0,69$
 
 Yes this is a common state for the nuclear plant.
 
@@ -83,7 +91,9 @@ Yes this is a common state for the nuclear plant.
 is both a water leak and a pump failure? Would knowing the state of any other
  variable matter? Explain your reasoning!}}
 
-$P(Meltdown | PumpFailure \bigcap WaterLeak ) = 0,8$
+ \vspace{1em}
+
+$P(Meltdown | PumpFailure,WaterLeak ) = 0,2$
 
 No other variables matter.
 When all the parents values are observed they alone determine the child value.
@@ -91,40 +101,31 @@ When all the parents values are observed they alone determine the child value.
 
 \textit{\textbf{d) Calculate manually the probability of a meltdown when you
 happen to know that PumpFailureWarning=F, WaterLeak=F, WaterLeakWarning=F and
- IcyWeather=F but you are not really sure about a pump failure.
-    Hint: Use the Exact Inference formula near the end of the slides,
-or in sec. 14.4.1 in the book. This formula includes both conditioning
-on the variables you know (evidence) and marginalizing (summing) over the
-variable(s) you do not know (often called unobserved or hidden). You need
-to calculate this both for P(Meltdown=T|...) and P(Meltdown=F|..) and normalize
-them so that they sum to 1. This normalization factor is the alpha symbol in
-the equation. With this formula you could answer any query in the network,
-though it will be impractical for cases with many unobserved variables. A
-suggestion is to move the terms that do not involve the pump failure variable
-out of the sum over the two states pump failure can be in (T/F). You may use
-inference in the applet for verification purposes, but small differences
-is expected due to rounding errors.}}
+ IcyWeather=F but you are not really sure about a pump failure.}}
 
+ \vspace{1em}
 
+\begin{center}
 The chain rule provide us with the following equation
 
-$P(MD = T | PF unsure,  everything else false)$
+$P(MD=T|PF unsure,else false)= P(IW).P(WL|IW).P(WLW|WL).[P(PF=T).P(PFW|PF=T).P(MD=T|PF=T,WL)+ P(PF=F).P(PFW|PF=F).P(MD=T|PF=F,WL)]$
 
-$= P(IW) * P(WL | IW) * P(WLW | WL)* [P(PF=T) * P(PW | PF=T) * P(MD=T | PF=T,WL) + P(PF=F) * P(PW | PF=F) * P(MD=T | PF=F,WL)]$
+$= 0,95*0,9*0,95*(0,1*0,1*0,2 + 0,9*0,95*0,01) = 0,008569$ (1)
+\end{center}
 
-$= 0,95 * 0,9 * 0,95 * (0,1 * 0,1 * 0,16 + 0,9 * 0,95 * 0,01) = 0,008$ (1)
+\vspace{2em}
+\begin{center}
+$P(MD=F|PF unsure, else false)$
 
-$P(MD=F | PF unsure,  everything else false)$
+$=P(IW).P(WL|IW).P(WLW|WL)* [P(PF=T).P(PFW|PF=T).P(MD=F|PF=T,WL) + P(PF=F).P(PFW|PF=F).P(MD=F|PF=F,WL)]$
 
-$=P(IW) * P(WL | IW) * P(WLW | WL)* [P(PF=T) * P(PW | PF=T) * P(MD=F | PF=T,WL) + P(PF=F) * P(PW | PF=F) * P(MD=F | PF=F,WL)]$
+$= 0,95 * 0,9 * 0,95 * (0,1 * 0,1 * 0,80 + 0,9 * 0,95 * 0,99) =0.694027$ (2)
+\vspace{2em}
+$\text{(1) and (2) }=> \alpha = 1 / (0,008 + 0,69) = 1,42329 $
 
-$= 0,95 * 0,9 * 0,95 * (0,1 * 0,1 * 0,84 + 0,9 * 0,95 * 0,99) =0,694$ (2)
+$(1)\text{ } 0,008 * 1,42 = 0,012\text{ and (2) }0,694 * 1,42 = 0,988 $
 
-$(1) and (2) => \alpha = 1 / (0,008 + 0,69) = 1,42 $
-
-$(1) 0,008 * 1,42 = 0,012 $
-
-$(2) 0,694 * 1,42 = 0,988 $
+\end{center}
 
 
 
@@ -139,17 +140,15 @@ employees by demonstrating the many features of his car stereo.
 To everyone's disappointment, it doesn't work. How did the owner's
 chances of surviving the day change after this observation?}}
 
+\vspace{1em}
 With the assumption that the radio does not work, the probability of survival
 is \textbf{$P(Survives)=0.98116$} which is less than the probability of survival without making any
 observation on the radio, \textbf{$P(Survives)=0.99001$}.
 
 \textit{\textbf{The owner buys a new bicycle that he brings to work every day.
-The bicycle has the following properties:
-P(bicycle\_works) = 0.9
-$P(survives | ¬moves \bigcap melt-down \bigcap bicycle\_works) = 0.6$
-$P(survives | moves \bigcap melt-down \bigcap bicycle\_works) = 0.9$
 How does the bicycle change the owner's chances of survival?}}
 
+\vspace{1em}
 With the addition of the bicycle to the network, the probability of survival
 increases slightly $P(Survives)=0.99505$.
 
@@ -179,6 +178,7 @@ With the observation of Meltdown and Reacts, $P(Survives)=0.82104$.
 to replace the pump with a better one. Is it possible, in your model, to
 compensate for the lack of Mr H.S.'s expertise with a better pump?}}
 
+\vspace{1em}
 Without Mr H.S. it is possible to achieve the same probability of survival by
 decreasing the probability of PumpFailure by only 1%.
 
@@ -195,6 +195,7 @@ decreasing the probability of PumpFailure by only 1%.
 \textit{\textbf{What unrealistic assumptions do you make when creating a
 Bayesian Network model of a person?}}
 
+\vspace{1em}
 We make the assumption that human actions are predictable. Furthermore, we do not
 consider the gain of experience which would modify the probabilities, for exemple
 Mr H.S. will be less incompetent.
@@ -203,18 +204,10 @@ Mr H.S. will be less incompetent.
  example the "IcyWeather" is more likely to be true the next day if it was
  true the day before. You only have to consider a limited sequence of days.}}
 
+ \vspace{1em}
 We would have to add nodes representing the weather of the previous days.
 The node representing the previous day should have more impact on IcyWeather that
 the day before and so on until the last weather saved.
-
-%\begin{figure}[h]
-%    \centering
-  %  \begin{tabular}{cc}
-      %\includegraphics[width=.46\linewidth,scale=1]{./images/lab2_bfs.png} & \includegraphics[width=.36\linewidth, scale=1.5]{./images/lab2_dfs.png} \\
-  %    \hspace{0.5cm} (a) & \hspace{0.5cm} (b)
-  %  \end{tabular}
-  %  \caption{Comparison between built-in and custom implementation (a) BFS - (b) DFS \label{fig:BFS and DFS}}
-%\end{figure}
 
 \newpage
 \thispagestyle{empty}
