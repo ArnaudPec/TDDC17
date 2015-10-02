@@ -14,7 +14,7 @@ observations have been made? What if there is icy weather?}}
 \vspace{1em}
 
 If no observation has been made, the risk of melt-down in the power plant is
-equal to \textbf{0.02578}. If there is icy weather it rises to \textbf{0.03472}.
+equal to 0.02578. If there is icy weather it rises to 0.03472.
 
 \textit{\textbf{b) Suppose that both warning sensors indicate failure. What is the risk
 of a meltdown in that case? Compare this result with the risk of a melt-down
@@ -83,7 +83,7 @@ The chain rule provide us with the following equation
 
 $P(everything false) = P(IW).P(PF).P(PFW|PF).P(MD|PF, WL).P(WL|IW).P(WLW|WL)$
 
-\hspace{9em}$= 0,95 * 0,9 * 0,95 * 1 * 0,9 * 0,95 = 0,69$
+\hspace{9em}$= 0.95 * 0.9 * 0.95 * 1 * 0.9 * 0.95 = 0.69$
 
 Yes this is a common state for the nuclear plant.
 
@@ -93,7 +93,7 @@ is both a water leak and a pump failure? Would knowing the state of any other
 
  \vspace{1em}
 
-$P(Meltdown | PumpFailure,WaterLeak ) = 0,2$
+$P(Meltdown | PumpFailure,WaterLeak ) = 0.2$
 
 No other variables matter.
 When all the parents values are observed they alone determine the child value.
@@ -109,8 +109,7 @@ happen to know that PumpFailureWarning=F, WaterLeak=F, WaterLeakWarning=F and
 The chain rule provide us with the following equation
 
 $P(MD=T|PF unsure,else false)= P(IW).P(WL|IW).P(WLW|WL).[P(PF=T).P(PFW|PF=T).P(MD=T|PF=T,WL)+ P(PF=F).P(PFW|PF=F).P(MD=T|PF=F,WL)]$
-
-$= 0,95*0,9*0,95*(0,1*0,1*0,2 + 0,9*0,95*0,01) = 0,008569$ (1)
+$= 0.95*0.9*0.95*(0.1*0.1*0.15+0.9*0.95*0.001) = 0.00191284875$ (1)
 \end{center}
 
 \vspace{2em}
@@ -119,11 +118,11 @@ $P(MD=F|PF unsure, else false)$
 
 $=P(IW).P(WL|IW).P(WLW|WL)* [P(PF=T).P(PFW|PF=T).P(MD=F|PF=T,WL) + P(PF=F).P(PFW|PF=F).P(MD=F|PF=F,WL)]$
 
-$= 0,95 * 0,9 * 0,95 * (0,1 * 0,1 * 0,80 + 0,9 * 0,95 * 0,99) =0.694027$ (2)
+$= 0,95 * 0,9 * 0,95 * (0.1*0.1*0.85+0.9*0.95*0.999)) =0.7006834012499998$ (2)
 \vspace{2em}
-$\text{(1) and (2) }=> \alpha = 1 / (0,008 + 0,69) = 1,42329 $
+$\text{(1) and (2) }=> \alpha = 1 / (0.00191284875 + 0.7006834012499998) = 1.4232925382109571 $
 
-$(1)\text{ } 0,008 * 1,42 = 0,012\text{ and (2) }0,694 * 1,42 = 0,988 $
+$(1)\text{ } 0.00191284875 * \alpha = 0.0027225\text{ and (2) }0.7006834012499998 * 1.42 = 0.9972774 $
 
 \end{center}
 
@@ -157,6 +156,12 @@ logic with Bayesian Networks. What does this fact say about the complexity
 of exact inference in Bayesian Networks? What alternatives are there
 to exact inference?}}
 
+The complexity depends on the structure of the network. If if is a \textit{single
+connected network}, the complexity(time and space) is linear. But in a
+\textit{multiply connected network}, it can be exponential.
+
+Approximation can be a good alternative to exact inference in a Bayesian Network.
+It can be made by direct sampling methods or by Markov chain simulation.
 
 
 \newpage
@@ -167,6 +172,16 @@ to exact inference?}}
     \centering
       \includegraphics[width=0.83\linewidth]{./images/lab3.png}
     \caption{Adding Mr H.S.\label{graph}}
+\end{figure}
+
+Mr H.S. nodes are added with the following properties :
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[width=.45\linewidth,scale=1]{./images/i.png} & \includegraphics[width=.45\linewidth, scale=1.5]{./images/a.png} \\
+      \includegraphics[width=.45\linewidth,scale=1]{./images/r.png} & \includegraphics[width=.45\linewidth, scale=1.5]{./images/k.png} \\
+    \end{tabular}
 \end{figure}
 
 With the addition of Mr H.S. to the network, the probability of survival
@@ -180,7 +195,7 @@ compensate for the lack of Mr H.S.'s expertise with a better pump?}}
 
 \vspace{1em}
 Without Mr H.S. it is possible to achieve the same probability of survival by
-decreasing the probability of PumpFailure by only 1%.
+decreasing the probability of PumpFailure by only 1\%.
 
 \textit{\textbf{Mr H.S. fell asleep on one of the plant's couches.
  When he wakes up he hears someone scream: "There is one or more warning
@@ -192,13 +207,18 @@ decreasing the probability of PumpFailure by only 1%.
     as is. How could you answer such questions? Maybe something could be added
     or modified in the network.}}
 
+\vspace{1em}
+A possibility could be the addition of one extra node in the network connected
+to both WaterLeakWarning and PumpFailureWarning.
+
+
 \textit{\textbf{What unrealistic assumptions do you make when creating a
 Bayesian Network model of a person?}}
 
 \vspace{1em}
 We make the assumption that human actions are predictable. Furthermore, we do not
 consider the gain of experience which would modify the probabilities, for exemple
-Mr H.S. will be less incompetent.
+Mr H.S. will more competent.
 
 \textit{\textbf{Describe how you would model a more dynamic world where for
  example the "IcyWeather" is more likely to be true the next day if it was
@@ -208,6 +228,7 @@ Mr H.S. will be less incompetent.
 We would have to add nodes representing the weather of the previous days.
 The node representing the previous day should have more impact on IcyWeather that
 the day before and so on until the last weather saved.
+\thispagestyle{empty}
 
 \newpage
 \thispagestyle{empty}
