@@ -14,10 +14,13 @@
     (climbable ?item) ;; a box can be climbable
     (carriable ?item) ;; a small item can be carriable
     (movable ?object) ;; shakey can move, any other object can not !
+    (switchable ?object)
 
+    (carry ?item ?arm)
+    (arm ?arm)
+    (free ?arm)
     (in ?what ?room)
     (turnedOn ?light) ;; a light can be turned on
-    (picked ?item) ;; an item is picked
     (on ?who) ;; shakey can be on an object
     )
 
@@ -85,36 +88,44 @@
     :precondition(and(on ?who)
       (in ?who ?room)
       (in ?light ?room)
+      (switchable ?light)
       (not(turnedOn ?light)))
-
     :effect(turnedOn ?light)
     )
 
   ;; Shakey can pick small carriable objects with his two grippers
 
   (:action pickup
-    :parameters(?who ?item ?room ?light)
+    :parameters(?who ?item ?room ?light ?arm)
     :precondition(and(in ?who ?room)
+      (in ?light ?room)
       (in ?item ?room)
+      (turnedOn ?light)
       (carriable ?item)
       (movable ?who)
       (not(on ?who))
-      (in ?light ?room)
-      (turnedOn ?light))
+      (arm ?arm);
+      (free ?arm);
+      )
 
     :effect(and(not(in ?item ?room))
-      (picked ?item))
+      (carry ?item ?arm);
+      (not(free ?arm)));
     )
 
     ;; Then Shakey can drop the item in another room
 
   (:action drop
-    :parameters(?who ?item ?room)
-    :precondition(and(picked ?item)
+    :parameters(?who ?item ?room ?arm)
+    :precondition(and
+      (arm ?arm)
+      (carry ?item ?arm)
       (movable ?who)
       (in ?who ?room)
       (not(on ?who)))
-    :effect(and(not(picked ?item))
+    :effect(and
+      (not(carry ?item ?arm))
+      (free ?arm)
       (in ?item ?room))
     )
 )
