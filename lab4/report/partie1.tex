@@ -106,8 +106,8 @@ conditions, the complexity is reduced.
 We are going to increase the number of balls and the world dimension.
 
 \newpage
-
-We are 
+The world dimension will be enlarged into a 3 by 3 room grid in the lasts
+problems.
 \thispagestyle{empty}
 \begin{center}
   \begin{verbatim}
@@ -144,32 +144,74 @@ We are
   SRI Shakey's World 9 rooms
 \end{center}
 
-\newpage
+%\newpage
 \thispagestyle{empty}
 \subsection*{Problems}
-Now, let us consider the following problems.
+
+\textit{Here are just the relevant inforations to understand the problems.
+For the complete description, please refer to the Shakey\_probX.pddl files.}
 \begin{itemize}
   \item \textit{Shakey\_prob1.pddl} : 3 rooms, 3 balls
   \vspace*{1em}
   \begin{verbatim}
+    (:init (in box room-2) (in ball-1 room-1) (in ball-2 room-2)
+      (in ball-3 room-2) (in shakey room-1))
+
     (:goal (and(in ball-1 room-3)
       (in ball-2 room-1) (in ball-3 room-3)(in shakey room-3)))
   \end{verbatim}
   \item \textit{Shakey\_prob2.pddl} : 3 rooms, 6 balls
   \vspace*{1em}
   \begin{verbatim}
+    (:init (in box room-2) (in ball-1 room-1)
+      (in ball-2 room-2) (in ball-3 room-2) (in ball-4 room-1)
+      (in ball-5 room-2) (in ball-6 room-3) (in shakey room-1))
+
     (:goal (and(in ball-1 room-3)
       (in ball-2 room-1) (in ball-3 room-3)(in ball-4 room-3)
       (in ball-5 room-1) (in ball-6 room-1)(in shakey room-3)))
   \end{verbatim}
   \item \textit{Shakey\_prob3.pddl} : 3 rooms, 12 balls
- text
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init (in box room-2) (in ball-1 room-1)
+      (in ball-2 room-2) (in ball-3 room-2) (in ball-4 room-1)
+      (in ball-5 room-2) (in ball-6 room-3) (in ball-7 room-1)
+      (in ball-8 room-2) (in ball-9 room-2) (in ball-10 room-1)
+      (in ball-11 room-2) (in ball-12 room-3) (in shakey room-1))
+
+    (:goal (and(in ball-1 room-3)
+      (in ball-2 room-1) (in ball-3 room-3)(in ball-4 room-3)
+      (in ball-5 room-1) (in ball-6 room-1)(in ball-7 room-3)
+      (in ball-8 room-1) (in ball-9 room-3)(in ball-10 room-2)
+      (in ball-11 room-3) (in ball-12 room-1)(in shakey room-3)))
+  \end{verbatim}
   \item \textit{Shakey\_prob4.pddl} : 9 rooms, 1 ball
- text
-  \item \textit{Shakey\_prob4.pddl} : 9 rooms, 3 balls
- text
-  \item \textit{Shakey\_prob5.pddl} : 9 rooms, 6 balls
- text
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init (in box room-1) (in ball-1 room-3) (in shakey room-2))
+
+    (:goal (in ball-1 room-9))
+  \end{verbatim}
+  \item \textit{Shakey\_prob5.pddl} : 9 rooms, 3 balls
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init (in box room-1) (in ball-1 room-3) (in ball-2 room-6)
+      (in ball-3 room-9) (in shakey room-2))
+
+    (:goal (and(in ball-1 room-9) (in ball-3 room-1) (in ball-2 room-7)))
+  \end{verbatim}
+  \item \textit{Shakey\_prob6.pddl} : 9 rooms, 6 balls
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init (in box room-1) (in ball-1 room-3) (in ball-2 room-6)
+      (in ball-3 room-9) (in ball-4 room-3) (in ball-5 room-3)
+      (in ball-6 room-9) (in shakey room-2) (movable shakey))
+
+    (:goal
+      (and(in ball-1 room-9) (in ball-3 room-1) (in ball-2 room-7)
+      (in ball-4 room-9) (in ball-5 room-7) (in ball-6 room-2)))
+  \end{verbatim}
 \end{itemize}
 \subsection*{Results}
 
