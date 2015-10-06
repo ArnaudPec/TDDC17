@@ -7,7 +7,7 @@
     lswitch-1 lswitch-2 lswitch-3
 
     box shakey leftArm rightArm
-    ball-1 ball-2 ball-3
+    ball-1 ball-2 ball-3 ball-4 ball-5 ball-6
     )
 
   (:init
@@ -25,10 +25,15 @@
     (in ball-1 room-1) (carriable ball-1)
     (in ball-2 room-2) (carriable ball-2)
     (in ball-3 room-2) (carriable ball-3)
+    (in ball-4 room-1) (carriable ball-4)
+    (in ball-5 room-2) (carriable ball-5)
+    (in ball-6 room-3) (carriable ball-6)
     (in shakey room-1) (movable shakey)
+
+
     )
 
   (:goal (and(in ball-1 room-3)
-    (in ball-2 room-1) (in ball-3 room-3)(in shakey room-3))
-  )
+    (in ball-2 room-1) (in ball-3 room-3)(in ball-4 room-3)
+    (in ball-5 room-1) (in ball-6 room-1)(in shakey room-3)))
 )

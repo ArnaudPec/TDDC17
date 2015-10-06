@@ -8,17 +8,19 @@
 
   (:predicates
 
+    ;; statics
     (connected ?room-1 ?room-2 ?door) ;; rooms are connected through a door
     (wide ?door) ;; a door can be wide opened or narrow
     (pushable ?item) ;; an item can be pushable
     (climbable ?item) ;; a box can be climbable
     (carriable ?item) ;; a small item can be carriable
     (movable ?object) ;; shakey can move, any other object can not !
-    (switchable ?object)
+    (switchable ?object) ;; a switch is a switchable object
 
+    ;; dynamics
     (carry ?item ?arm)
     (arm ?arm)
-    (free ?arm)
+    (free ?arm) ;; arm is free
     (in ?what ?room)
     (turnedOn ?light) ;; a light can be turned on
     (on ?who) ;; shakey can be on an object
@@ -94,6 +96,8 @@
     )
 
   ;; Shakey can pick small carriable objects with his two grippers
+  ;; The chosen grippers must be free  and light must be turned on
+  ;; in the room
 
   (:action pickup
     :parameters(?who ?item ?room ?light ?arm)
@@ -123,6 +127,7 @@
       (movable ?who)
       (in ?who ?room)
       (not(on ?who)))
+
     :effect(and
       (not(carry ?item ?arm))
       (free ?arm)

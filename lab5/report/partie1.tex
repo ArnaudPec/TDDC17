@@ -87,91 +87,24 @@ solution :
 In this part we are going to test and compare the different planners on a range
 of problems with increasing difficulty.
 
+\begin{itemize}
+  \item World dimensions : the default domain (see page 1) is composed of only
+three rooms. If we add more rooms or change the disposition to a grid of (n,m) rooms, the complexity increases rapidly.
+  \item The number of objects :
+  \item The initial state :
+\end{itemize}
+
 \subsection*{Identifying parameters}
 In order to create this range of problem, we first have to identify the
 parameters that can be modified to scale up the difficulty.
 
-\begin{itemize}
-  \item World dimensions : the default domain (see page 1) is composed of only
-three rooms. If we add more rooms or change the disposition to a grid of (n,m)
-rooms, the complexity increases rapidly.
-  \item The number of objects : The difficulty increases if we add more balls
-to carry to different places. If we limit the number of climbable boxes to 1,
-forcing Shakey to move to the box, then push it to the switch location, and so
-on...
-  \item The initial state : If the initial state contains already achieved goal
-conditions, the complexity is reduced.
-\end{itemize}
-
-We are going to increase the number of balls and the world dimension.
-
-\newpage
-
-We are 
-\thispagestyle{empty}
-\begin{center}
-  \begin{verbatim}
-  -------------------------------------------------------------------------
-  |                       |                       |                       |
-  |       light switch 1 -|- light switch2        |- light switch3        |
-  |       ---             |                     door2                     |
-  |       | |           door1      shakey         |                       |
-  |       ---           (wide)                    |                       |
-  |       box             |                       |                       |
-  |                       |                     door3                     |
-  |                       |                     (wide)                    |
-  |        room1          |        room2          |         room3         |
-  -------door4(wide)---------------------------------------door5-----------
-  |                       |                       |                       |
-  |       light switch4  -|- light switch5        |- light switch6        |
-  |                       |                       |                       |
-  |                     door6                     |                       |
-  |                     (wide)                    |                       |
-  |                       |                     door7                     |
-  |                       |                     (wide)                    |
-  |        room4          |        room5          |         room6         |
-  --------------------------------door8(wide)-------------door9------------
-  |                       |                       |                       |
-  |       light switch7  -|- light switch8        |- light switch9        |
-  |                       |                       |                       |
-  |                     door10                    |                       |
-  |                     (wide)                    |                       |
-  |                       |                     door11                    |
-  |                       |                     (wide)                    |
-  |        room7          |        room8          |         room9         |
-  -------------------------------------------------------------------------
-  \end{verbatim}
-  SRI Shakey's World 9 rooms
-\end{center}
-
-\newpage
-\thispagestyle{empty}
 \subsection*{Problems}
-Now, let us consider the following problems.
-\begin{itemize}
-  \item \textit{Shakey\_prob1.pddl} : 3 rooms, 3 balls
-  \vspace*{1em}
-  \begin{verbatim}
-    (:goal (and(in ball-1 room-3)
-      (in ball-2 room-1) (in ball-3 room-3)(in shakey room-3)))
-  \end{verbatim}
-  \item \textit{Shakey\_prob2.pddl} : 3 rooms, 6 balls
-  \vspace*{1em}
-  \begin{verbatim}
-    (:goal (and(in ball-1 room-3)
-      (in ball-2 room-1) (in ball-3 room-3)(in ball-4 room-3)
-      (in ball-5 room-1) (in ball-6 room-1)(in shakey room-3)))
-  \end{verbatim}
-  \item \textit{Shakey\_prob3.pddl} : 3 rooms, 12 balls
- text
-  \item \textit{Shakey\_prob4.pddl} : 9 rooms, 1 ball
- text
-  \item \textit{Shakey\_prob4.pddl} : 9 rooms, 3 balls
- text
-  \item \textit{Shakey\_prob5.pddl} : 9 rooms, 6 balls
- text
-\end{itemize}
+
+
+
 \subsection*{Results}
 
 \textit{Test protocol : all tests have been done in the same conditions, on
 the same computer.}
+
+Now, let us consider the following test cases.
