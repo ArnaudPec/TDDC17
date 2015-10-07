@@ -1,4 +1,4 @@
-(define (problem shakey_prob1)
+(define (problem shakey_prob4)
   (:domain shakey)
   (:objects
 

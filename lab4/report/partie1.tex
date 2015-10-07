@@ -218,7 +218,8 @@ For the complete description, please refer to the Shakey\_probX.pddl files.}
 \subsection*{Results}
 \thispagestyle{empty}
 \textit{Test protocol : all tests have been done in the same conditions, on
-the same computer (Liu server, accessed via thinlinc).}
+the same computer (Liu server, accessed via thinlinc). A time limit of 3600s
+has been choosen. If no solution has been found, the test failed.}
 \thispagestyle{empty}
 
 The results on this problem set are presented in \textit{Figure 2}.
@@ -226,8 +227,105 @@ The results on this problem set are presented in \textit{Figure 2}.
 \begin{figure}[h]
     \centering
     \begin{tabular}{cc}
-      \includegraphics[width=.49\linewidth,scale=1]{./images/tab1.png} & \includegraphics[width=.49\linewidth, scale=1.5]{./images/tab2.png} \\
+      \includegraphics[width=.49\linewidth,scale=1]{./images/tab1.png} &
+\includegraphics[width=.49\linewidth, scale=1.5]{./images/tab2.png} \\
       (a) & (b)
     \end{tabular}
     \caption{Running time in seconds (a) and path cost (b)}
 \end{figure}
+
+Firstly, we noticed that \textit{VHPOP} failed in every problem but problem 0.
+In fact
+the process is automatically killed before reaching the choosen time limit.
+
+As far as speed is concerned, \textit{FF} is a clear winner. Every planning
+problem is almost solved instantly. However, except in problem 0 and 4, the
+solution is never optimal.
+
+On the other hand \textit{LAMA} and \textit{IPP} always find the least-cost
+solution but the running time much longer as the problem become more difficult.
+
+\textit{Note : in Figure 2, when LAMA "fails", it means that the algorithms did
+not finish the exhausted search in time and therefore may not have found the
+optimal solution yet. It did not mean that no solution where found.}
+
+\subsection*{Adding more problems to the sets}
+
+In order to better understand the influence of each parameters, I have added
+three more problems.
+
+\begin{itemize}
+  \item \textit{Shakey\_prob2.5.pddl} : 3 rooms, 8 balls
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init (in box room-2) (in ball-1 room-1) (in ball-2 room-2)
+      (in ball-3 room-2) (in ball-4 room-1) (in ball-8 room-2)
+      (in ball-10 room-1)(in ball-11 room-2) (in ball-12 room-3)
+      (in shakey room-1))
+
+      (:goal (and(in ball-1 room-3) (in ball-2 room-1) (in ball-3 room-3)
+        (in ball-4 room-3) (in ball-8 room-1)(in ball-10 room-2)
+        (in ball-11 room-3) (in ball-12 room-1)(in shakey room-3)))
+
+  \end{verbatim}
+  \item \textit{Shakey\_prob4.5.pddl} : 9 rooms, 2 balls
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init  (in box room-1)(in ball-1 room-3)(in ball-2 room-6)
+      (in ball-3 room-9) (in shakey room-2)
+
+    (:goal (and(in ball-1 room-9) (in ball-2 room-7)))
+  \end{verbatim}
+  \thispagestyle{empty}
+  \item \textit{Shakey\_prob5.5.pddl} : 9 rooms, 4 balls
+  \vspace*{1em}
+  \begin{verbatim}
+    (:init  (in box room-1) (in ball-1 room-3) (in ball-3 room-9)
+      (in ball-5 room-3) (in ball-6 room-9) (in shakey room-2)
+
+      (:goal (and(in ball-1 room-9) (in ball-3 room-1)
+        (in ball-5 room-7) (in ball-6 room-2)))
+    \end{verbatim}
+\end{itemize}
+
+Results are presented in the \textit{Figure 3} below. Given the previous tests,
+\textit{VHPOP} has not been used. The first solution returned by \textit{LAMA}
+and its running time have been added to the comparison.
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[width=.49\linewidth,scale=1]{./images/tab3.png} &
+\includegraphics[width=.49\linewidth, scale=1.5]{./images/tab4.png} \\
+      (a) & (b)
+    \end{tabular}
+    \caption{Running time in seconds (a) and path cost (b)}
+\end{figure}
+
+
+We notice with problems 2.5, 5.5, and 6 that adding more balls
+increases the difficulty drastically. A clear example is the difference
+between problem 5 and 5.5.
+
+An interesting fact, is that except in the simpliests problems, the first
+solution returned by \textit{LAMA} is never optimal. It is not as fast as
+\textit{FF} and in this range of problem its optimality is comparable, sometimes
+better, sometimes worst see \textit{Figure 3b} and \textit{Figure 4}.
+
+In this test set, the best solution for optimality would be \textit{IPP}, it
+always find the optimal solution and sometimes way faster than \textit{LAMA}'s
+exhaustive search, see problem 5.5 for example.
+
+On the other hand, if speed is what matter the most, \textit{FF} seems to be
+the best tradeoff.
+
+\newpage
+\thispagestyle{empty}
+\begin{figure}[h]
+    \centering
+      \includegraphics[width=.65\linewidth,scale=1]{./images/graph.png}
+    \caption{Path cost comparison graph}
+\end{figure}
+
+As a conclusion, we notice that as planning problem grows larger, they
+cannot be solved optimaly in reasonable time. Here this is the case with problem 6.
