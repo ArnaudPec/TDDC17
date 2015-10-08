@@ -8,7 +8,8 @@ This third lab session explores the concept of Bayesian Networks.
 \subsection*{Questions}
 
 
-\textit{\textbf{a) What is the risk of melt-down in the power plant during a day if no
+\textit{\textbf{a) What is the risk of melt-down in the power plant during a day
+if no
 observations have been made? What if there is icy weather?}}
 
 \vspace{1em}
@@ -16,7 +17,8 @@ observations have been made? What if there is icy weather?}}
 If no observation has been made, the risk of melt-down in the power plant is
 equal to 0.02578. If there is icy weather it rises to 0.03472.
 
-\textit{\textbf{b) Suppose that both warning sensors indicate failure. What is the risk
+\textit{\textbf{b) Suppose that both warning sensors indicate failure. What is
+the risk
 of a meltdown in that case? Compare this result with the risk of a melt-down
 when there is an actual pump failure and water leak. What is the difference?
 The answers must be expressed as conditional probabilities of the observed
@@ -31,28 +33,34 @@ $P(Meltdown| PumpFailure,WaterLeak) = 0.2$
 The probability of having a meltdown whent there is a pump failure and a water
 leak is higher.
 
-\textit{\textbf{c) The conditional probabilities for the stochastic variables are often
+\textit{\textbf{c) The conditional probabilities for the stochastic variables
+are often
 estimated by repeated experiments or observations. Why is it sometimes very
 difficult to get accurate numbers for these? What conditional probabilities
-in the model of the plant do you think are difficult or impossible to estimate?}}
+in the model of the plant do you think are difficult or impossible to
+estimate?}}
 
 \vspace{1em}
 
 
-It is challenging to measure precisely the effect of each parameter taken separately
+It is challenging to measure precisely the effect of each parameter taken
+separately
 from the others on a given event. Furthermore some parameters are simply not
-quantifiable, for example \textit{IcyWeather}. Is this relative to the temperature ?
+quantifiable, for example \textit{IcyWeather}. Is this relative to the
+temperature ?
 The humidity rate? The pressure ? In this problem we have no proper definition,
 therefore it is impossible to estimate.
 
-\textit{\textbf{d) Assume that the "IcyWeather" variable is changed to a more accurate
+\textit{\textbf{d) Assume that the "IcyWeather" variable is changed to a more
+accurate
 "Temperature" variable instead (don't change your model). What are the different
  alternatives for the domain of this variable? What will happen with the
  probability distribution of P(WaterLeak | Temperature) in each alternative? }}
 
  \vspace{1em}
 
-The domain will have more possible states. Instead of having simply IcyWeather true or
+The domain will have more possible states. Instead of having simply IcyWeather
+true or
 false based on unknown parameters, the temperature will be represented as a
 number (e.g. 3°C) or as a range of temperature (e.g. 5-10°C).
 
@@ -62,11 +70,13 @@ number (e.g. 3°C) or as a range of temperature (e.g. 5-10°C).
 \newpage
 \thispagestyle{empty}
 
-\textit{\textbf{a) What does a probability table in a Bayesian network represent?}}
+\textit{\textbf{a) What does a probability table in a Bayesian network
+represent?}}
 
 \vspace{1em}
 
-The probability table shows the probability of each possible state of a node given
+The probability table shows the probability of each possible state of a node
+given
 the states of the parent nodes.
 
 
@@ -108,7 +118,9 @@ happen to know that PumpFailureWarning=F, WaterLeak=F, WaterLeakWarning=F and
 \begin{center}
 The chain rule provide us with the following equation
 
-$P(MD=T|PF unsure,else false)= P(IW).P(WL|IW).P(WLW|WL).[P(PF=T).P(PFW|PF=T).P(MD=T|PF=T,WL)+ P(PF=F).P(PFW|PF=F).P(MD=T|PF=F,WL)]$
+$P(MD=T|PF unsure,else false)=
+P(IW).P(WL|IW).P(WLW|WL).[P(PF=T).P(PFW|PF=T).P(MD=T|PF=T,WL)+
+P(PF=F).P(PFW|PF=F).P(MD=T|PF=F,WL)]$
 $= 0.95*0.9*0.95*(0.1*0.1*0.15+0.9*0.95*0.001) = 0.00191284875$ (1)
 \end{center}
 
@@ -116,13 +128,16 @@ $= 0.95*0.9*0.95*(0.1*0.1*0.15+0.9*0.95*0.001) = 0.00191284875$ (1)
 \begin{center}
 $P(MD=F|PF unsure, else false)$
 
-$=P(IW).P(WL|IW).P(WLW|WL)* [P(PF=T).P(PFW|PF=T).P(MD=F|PF=T,WL) + P(PF=F).P(PFW|PF=F).P(MD=F|PF=F,WL)]$
+$=P(IW).P(WL|IW).P(WLW|WL)* [P(PF=T).P(PFW|PF=T).P(MD=F|PF=T,WL) +
+P(PF=F).P(PFW|PF=F).P(MD=F|PF=F,WL)]$
 
 $= 0,95 * 0,9 * 0,95 * (0.1*0.1*0.85+0.9*0.95*0.999)) =0.7006834012499998$ (2)
 \vspace{2em}
-$\text{(1) and (2) }=> \alpha = 1 / (0.00191284875 + 0.7006834012499998) = 1.4232925382109571 $
+$\text{(1) and (2) }=> \alpha = 1 / (0.00191284875 + 0.7006834012499998) =
+1.4232925382109571 $
 
-$(1)\text{ } 0.00191284875 * \alpha = 0.0027225\text{ and (2) }0.7006834012499998 * 1.42 = 0.9972774 $
+$(1)\text{ } 0.00191284875 * \alpha = 0.0027225\text{ and (2)
+}0.7006834012499998 * 1.42 = 0.9972774 $
 
 \end{center}
 
@@ -141,7 +156,8 @@ chances of surviving the day change after this observation?}}
 
 \vspace{1em}
 With the assumption that the radio does not work, the probability of survival
-is \textbf{$P(Survives)=0.98116$} which is less than the probability of survival without making any
+is \textbf{$P(Survives)=0.98116$} which is less than the probability of survival
+without making any
 observation on the radio, \textbf{$P(Survives)=0.99001$}.
 
 \textit{\textbf{The owner buys a new bicycle that he brings to work every day.
@@ -156,13 +172,27 @@ logic with Bayesian Networks. What does this fact say about the complexity
 of exact inference in Bayesian Networks? What alternatives are there
 to exact inference?}}
 
-The complexity depends on the structure of the network. If if is a \textit{single
+The complexity depends on the structure of the network. If if is a
+\textit{single
 connected network}, the complexity(time and space) is linear. But in a
 \textit{multiply connected network}, it can be exponential.
 
-Approximation can be a good alternative to exact inference in a Bayesian Network.
-It can be made by direct sampling methods or by Markov chain simulation.
+%  Yes but it might be complex and you might sometimes have to add new nodes.
+For
+%example if you want to model an OR-relationship you have to add a new node with
+%truthtable probabilities that match.
 
+%Approximation can be a good alternative to exact inference in a Bayesian
+%Network. It can be made by direct sampling methods or by Markov chain
+simulation.
+
+Since it is possible to model any function in propositional logic with Bayesian
+Networks, exact inference is as hard as to compute the number of satisfying
+assignements for that propositional formula. Complexity is \#P-hard.
+
+Approximation can be a good alternative to exact inference in a Bayesian
+Network. It can be made by direct sampling methods or by Markov chain
+simulation.
 
 \newpage
 \thispagestyle{empty}
@@ -179,8 +209,10 @@ Mr H.S. nodes are added with the following properties :
 \begin{figure}[h]
     \centering
     \begin{tabular}{cc}
-      \includegraphics[width=.45\linewidth,scale=1]{./images/i.png} & \includegraphics[width=.45\linewidth, scale=1.5]{./images/a.png} \\
-      \includegraphics[width=.45\linewidth,scale=1]{./images/r.png} & \includegraphics[width=.45\linewidth, scale=1.5]{./images/k.png} \\
+      \includegraphics[width=.45\linewidth,scale=1]{./images/i.png} &
+\includegraphics[width=.45\linewidth, scale=1.5]{./images/a.png} \\
+      \includegraphics[width=.45\linewidth,scale=1]{./images/r.png} &
+\includegraphics[width=.45\linewidth, scale=1.5]{./images/k.png} \\
     \end{tabular}
 \end{figure}
 
@@ -209,16 +241,23 @@ decreasing the probability of PumpFailure by only 1\%.
 
 \vspace{1em}
 A possibility could be the addition of one extra node in the network connected
-to both WaterLeakWarning and PumpFailureWarning. Then it would be possible to ask
+to both WaterLeakWarning and PumpFailureWarning. Then it would be possible to
+ask
 the network.
 
+  By adding a new node called warning, which represents the OR-relationship of
+WaterLeakWarning and PumpFailureWarning, i.e. Warning is true if
+WaterLeakWarning is true or if PumpFailureWarning is true or if They are both
+true and is false if they are both false. P(survives) = 0.98897
 
 \textit{\textbf{What unrealistic assumptions do you make when creating a
 Bayesian Network model of a person?}}
 
 \vspace{1em}
-We make the assumption that human actions are predictable. Furthermore, we do not
-consider the gain of experience which would modify the probabilities, for exemple
+We make the assumption that human actions are predictable. Furthermore, we do
+not
+consider the gain of experience which would modify the probabilities, for
+exemple
 Mr H.S. will more competent.
 
 \textit{\textbf{Describe how you would model a more dynamic world where for
@@ -226,9 +265,28 @@ Mr H.S. will more competent.
  true the day before. You only have to consider a limited sequence of days.}}
 
  \vspace{1em}
-We would have to add nodes representing the weather of the previous days.
-The node representing the previous day should have more impact on IcyWeather that
-the day before and so on until the last weather saved.
+
+ A possibility could be the addition of one extra node in the network connected to both WaterLeakWarning and PumpFailureWarning. This node would represent the OR relationship between those two warnings.
+ Its table should look like this :
+
+\begin{centering}
+
+  \begin{tabular}{ccc}
+
+    PFW     &    WLW    &    Node  \\
+    F       &         F        &        F \\
+    T       &         F        &        T \\
+    F       &         T        &       T \\
+    T       &         T        &       T
+
+
+  \end{tabular}
+
+\end{centering}
+
+
+ With that disjunction added, it would now be possible to as the network.
+
 \thispagestyle{empty}
 
 \newpage
