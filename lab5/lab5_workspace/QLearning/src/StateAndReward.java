@@ -4,19 +4,17 @@ public class StateAndReward {
 	/* State discretization function for the angle controller */
 	public static String getStateAngle(double angle, double vx, double vy) {
 
-		/* TODO: IMPLEMENT THIS FUNCTION */
+		int a = discretize(angle,39,-Math.PI/2,Math.PI/2);
 
-		String state = "OneStateToRuleThemAll";
+		String state = "Angle:"+ Integer.toString(a);;
 		
 		return state;
 	}
 
 	/* Reward function for the angle controller */
 	public static double getRewardAngle(double angle, double vx, double vy) {
-
-		/* TODO: IMPLEMENT THIS FUNCTION */
 		
-		double reward = 0;
+		double reward = 40 * (Math.PI - Math.abs(angle))/Math.PI;
 
 		return reward;
 	}

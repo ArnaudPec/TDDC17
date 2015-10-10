@@ -81,15 +81,62 @@ public class QLearningController extends Controller {
 		rightEngine.setBursting(false);
 		middleEngine.setBursting(false);
 	}
+	
+	void turnRight(){
+		resetRockets();
+		leftEngine.setBursting(true);
+	}
+	
+
+	void turnLeft(){
+		resetRockets();
+		rightEngine.setBursting(true);
+	}
+	
+	void turnRightForward(){
+		resetRockets();
+		middleEngine.setBursting(true);
+		leftEngine.setBursting(true);
+	}
+	
+
+	void turnLeftForward(){
+		resetRockets();
+		middleEngine.setBursting(true);
+		rightEngine.setBursting(true);
+	}
+	
+
+	void moveForward(){
+		resetRockets();
+		middleEngine.setBursting(true);
+	}
+
 
 	/* Performs the chosen action */
 	void performAction(int action) {
-
-		/* Fire zeh rockets! */
-		/* TODO: Remember to change NUM_ACTIONS constant to reflect the number of actions (including 0, no action) */
 		
-		/* TODO: IMPLEMENT THIS FUNCTION */
-		
+		switch (action) {
+			case 0:
+				resetRockets();
+				break;
+			case 1:
+				moveForward();
+				break;
+			case 2:
+				turnRight();
+				break;
+			case 3:
+				turnLeft();
+				break;
+			case 4:
+				turnLeftForward();
+				break;
+			case 5:
+				turnRightForward();
+				break;
+			
+		}
 	}
 
 	/* Main decision loop. Called every iteration by the simulator */
@@ -127,7 +174,9 @@ public class QLearningController extends Controller {
 				/* TODO: IMPLEMENT Q-UPDATE HERE! */
 				
 				/* See top for constants and below for helper functions */
-				
+				double qOldValue = Qtable.get(prev_stateaction);
+				double qValue = qOldValue + alpha(Ntable.get(prev_stateaction))*(previous_reward+ GAMMA_DISCOUNT_FACTOR*(getMaxActionQValue(prev_stateaction)-qOldValue));
+				Qtable.put(prev_stateaction,qValue);
 				
 				int action = selectAction(new_state); /* Make sure you understand how it selects an action */
 
