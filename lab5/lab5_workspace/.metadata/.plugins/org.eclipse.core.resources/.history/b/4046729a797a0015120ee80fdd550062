@@ -1,0 +1,174 @@
+public class StateAndReward {
+
+	
+	/* State discretization function for the angle controller */
+	public static String getStateAngle(double angle, double vx, double vy) {
+
+		return  "Angle:"+ Integer.toString(discretize(angle,4,-Math.PI/3,Math.PI/3));
+
+	}
+
+	/* Reward function for the angle controller */
+	public static double getRewardAngle(double angle, double vx, double vy) {
+		
+		return (Math.PI - Math.abs(angle))/Math.PI;
+	}
+
+	/* State discretization function for the full hover controller */
+	public static String getStateHover(double angle, double vx, double vy) {
+
+		double a = getRewardAngle(angle, vx, vy);
+		double v = Math.sqrt(vy*vy + vx*vx);
+		
+		if(a>0.8 && v < 2.5 ) { 
+			return "State1";
+		}
+		else if (a>0.5 && v < 4) {
+			return "State2";
+		} else {
+			return "State3";
+		}
+		
+		//return  "A:"+ Integer.toString(a) + "VY:" +Integer.toString(vvy) + "VX:"+Integer.toString(vvx);
+	}
+
+	/* Reward function for the full hover controller */
+	public static double getRewardHover(double angle, double vx, double vy) {
+		
+		String s = getStateHover(angle,vx,vy);
+		if (s == "State1") {
+			return 10;
+		}
+		else if (s == "State2") {	
+			return 3;
+			
+		} else {
+			return 0;
+		}
+		
+		return rewardHover;
+	}
+
+	public static int discretize(double value, int nrValues, double min,
+			double max) {
+		if (nrValues < 2) {
+			return 0;
+		}
+
+		double diff = max - min;
+
+		if (value < min) {
+			return 0;
+		}
+		if (value > max) {
+			return nrValues - 1;
+		}
+
+		double tempValue = value - min;
+		double ratio = tempValue / diff;
+
+		return (int) (ratio * (nrValues - 2)) + 1;
+	}
+
+	public static int discretize2(double value, int nrValues, double min,
+			double max) {
+		double diff = max - min;
+
+		if (value < min) {
+			return 0;
+		}
+		if (value > max) {
+			return nrValues - 1;
+		}
+
+		double tempValue = value - min;
+		double ratio = tempValue / diff;
+
+		return (int) (ratio * nrValues);
+	}
+
+}
+
+//public class StateAndReward {
+//
+//	
+//	/* State discretization function for the angle controller */
+//	public static String getStateAngle(double angle, double vx, double vy) {
+//
+//		return  "Angle:"+ Integer.toString(discretize(angle,4,-Math.PI/3,Math.PI/3));
+//
+//	}
+//
+//	/* Reward function for the angle controller */
+//	public static double getRewardAngle(double angle, double vx, double vy) {
+//		
+//		return (Math.PI - Math.abs(angle))/Math.PI;
+//	}
+//
+//	/* State discretization function for the full hover controller */
+//	public static String getStateHover(double angle, double vx, double vy) {
+//
+//		int a = discretize(angle,4,-Math.PI/3,Math.PI/3);
+//		int vvy = discretize(vy,6,-3, 3);
+//		int vvx = discretize(vx,6,-4, 4);
+//			
+//		return  "A:"+ Integer.toString(a) + "VY:" +Integer.toString(vvy) + "VX:"+Integer.toString(vvx);
+//	}
+//
+//	/* Reward function for the full hover controller */
+//	public static double getRewardHover(double angle, double vx, double vy) {
+//		
+//		int rewardVelocity = 0;
+//		double speed = Math.sqrt(vy*vy + vx*vx);
+//		
+//		if(speed < 2.5){
+//			rewardVelocity=40;
+//		}
+//		else if	(speed<4){
+//			rewardVelocity = 3;
+//		}
+//
+//		double rewardHover = rewardVelocity + getRewardAngle(angle,vx,vy);
+//
+//		return rewardHover;
+//	}
+//
+//	public static int discretize(double value, int nrValues, double min,
+//			double max) {
+//		if (nrValues < 2) {
+//			return 0;
+//		}
+//
+//		double diff = max - min;
+//
+//		if (value < min) {
+//			return 0;
+//		}
+//		if (value > max) {
+//			return nrValues - 1;
+//		}
+//
+//		double tempValue = value - min;
+//		double ratio = tempValue / diff;
+//
+//		return (int) (ratio * (nrValues - 2)) + 1;
+//	}
+//
+//	public static int discretize2(double value, int nrValues, double min,
+//			double max) {
+//		double diff = max - min;
+//
+//		if (value < min) {
+//			return 0;
+//		}
+//		if (value > max) {
+//			return nrValues - 1;
+//		}
+//
+//		double tempValue = value - min;
+//		double ratio = tempValue / diff;
+//
+//		return (int) (ratio * nrValues);
+//	}
+//
+//}

@@ -1,0 +1,85 @@
+public class StateAndReward {
+
+	
+	/* State discretization function for the angle controller */
+	public static String getStateAngle(double angle, double vx, double vy) {
+
+		return  "Angle:"+ Integer.toString(discretize(angle,19,-Math.PI/2,Math.PI/2));
+
+	}
+
+	/* Reward function for the angle controller */
+	public static double getRewardAngle(double angle, double vx, double vy) {
+		
+		return Math.PI - Math.abs(angle);
+	}
+
+	/* State discretization function for the full hover controller */
+	public static String getStateHover(double angle, double vx, double vy) {
+
+		int a = discretize(angle,19,-Math.PI/2,Math.PI/2);
+
+		int vvy = discretize(vy,7,0, 5);
+		int vvx = discretize(vx,14,0, 5);
+	
+	
+		String state = "A:"+ Integer.toString(a) + "VY:" +Integer.toString(vvy) + "VX:"+Integer.toString(vvx);
+			
+		return state;
+	}
+
+	/* Reward function for the full hover controller */
+	public static double getRewardHover(double angle, double vx, double vy) {
+		
+		double rewardVelocity = 0;
+		
+		if(Math.abs(vy)<0.4)rewardVelocity+=14;
+		else if(Math.abs(vy)<1.0){
+			rewardVelocity = 3;
+		}
+		if(Math.abs(vx)>1)rewardVelocity=0;
+
+		double rewardHover = rewardVelocity + 2*getRewardAngle(angle,vx,vy);
+
+		return rewardHover;
+	}
+
+	public static int discretize(double value, int nrValues, double min,
+			double max) {
+		if (nrValues < 2) {
+			return 0;
+		}
+
+		double diff = max - min;
+
+		if (value < min) {
+			return 0;
+		}
+		if (value > max) {
+			return nrValues - 1;
+		}
+
+		double tempValue = value - min;
+		double ratio = tempValue / diff;
+
+		return (int) (ratio * (nrValues - 2)) + 1;
+	}
+
+	public static int discretize2(double value, int nrValues, double min,
+			double max) {
+		double diff = max - min;
+
+		if (value < min) {
+			return 0;
+		}
+		if (value > max) {
+			return nrValues - 1;
+		}
+
+		double tempValue = value - min;
+		double ratio = tempValue / diff;
+
+		return (int) (ratio * nrValues);
+	}
+
+}

@@ -1,0 +1,93 @@
+public class StateAndReward {
+
+	
+	/* State discretization function for the angle controller */
+	public static String getStateAngle(double angle, double vx, double vy) {
+
+		int a = discretize(angle,39,-Math.PI/2,Math.PI/2);
+
+		String state = "Angle:"+ Integer.toString(a);;
+		
+		return state;
+	}
+
+	/* Reward function for the angle controller */
+	public static double getRewardAngle(double angle, double vx, double vy) {
+		
+		//double reward = 43 * (Math.PI - Math.abs(angle))/Math.PI;
+		double reward = (Math.PI - Math.abs(angle));
+
+		return reward;
+	}
+
+	/* State discretization function for the full hover controller */
+	public static String getStateHover(double angle, double vx, double vy) {
+
+		int a = discretize(angle,39,-Math.PI/2,Math.PI/2);
+
+		int vvy = discretize(vy,10,0, 20);
+		int vvx = discretize(vx,10,0, 20);
+	
+	
+		String state = "A:"+ Integer.toString(a) + "VY:" +Integer.toString(vvy) + "VX:"+Integer.toString(vvx);
+			
+		return state;
+	}
+
+	/* Reward function for the full hover controller */
+	public static double getRewardHover(double angle, double vx, double vy) {
+		
+		double rewardVelocity = 0;
+		
+		if(Math.abs(vy)<1)rewardVelocity+=3;
+//		else if (Math.abs(vy)<2) {
+//			rewardVelocity+=5;
+//		}
+//		if(Math.abs(vx)>1)rewardVelocity=0;
+//		if(Math.abs(vx)>2)rewardVelocity=-1;
+		System.out.println("RewardVelocity : " + rewardVelocity);
+		
+		double rewardHoover = rewardVelocity + 1*getRewardAngle(angle,vx,vy);
+
+		return rewardHoover;
+	}
+
+	public static int discretize(double value, int nrValues, double min,
+			double max) {
+		if (nrValues < 2) {
+			return 0;
+		}
+
+		double diff = max - min;
+
+		if (value < min) {
+			return 0;
+		}
+		if (value > max) {
+			return nrValues - 1;
+		}
+
+		double tempValue = value - min;
+		double ratio = tempValue / diff;
+
+		return (int) (ratio * (nrValues - 2)) + 1;
+	}
+
+	public static int discretize2(double value, int nrValues, double min,
+			double max) {
+		double diff = max - min;
+
+		if (value < min) {
+			return 0;
+		}
+		if (value > max) {
+			return nrValues - 1;
+		}
+
+		double tempValue = value - min;
+		double ratio = tempValue / diff;
+
+		return (int) (ratio * nrValues);
+	}
+
+}
