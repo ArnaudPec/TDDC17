@@ -1,110 +1,125 @@
-\section*{Task 1 : Writing Domain and Problem}
-\thispagestyle{empty}
+\section*{Introduction} \thispagestyle{empty}
 
-The aim of this fourth lab is to learn how to model a problem that can be
-solved with automatic solvers called planners, using a formal language : PDDL.
+The aim of this fifth lab is to discover the basis of reinforcement
+learning with the implementation of the Q-Learning algorithm on a rocket
+stabilization problem.
 
-Different domains alternatives are suggested. I have chosen to implement the AI
-classic Shakey's World.
-
-Shakey is a robot with two grippers that is moving in a set of rooms, connected
-by doors. Each room contains a lightswitch which can be on or off but may also
-contain big boxes or smaller objects.
-
-The lab page defines the following constraints :
-\begin{itemize}
-  \item Shakey can carry small objects, but only two at a time because he has
-  only two grippers.
-  \item For Shakey to be able to find a small object in a room, the light must
-  be on in that room.
-  \item Shakey can not carry boxes, but can push them around. Boxes can only be
-  pushed through wide doors, not narrow ones.
-  \item To switch the light in a room on or off Shakey must climb onto a box
-  that is positioned below the switch (otherwise he can not reach the switch).
-  This may in turn require moving the box into position, possibly from another
-  room.
+It is divided in three different parts : \begin{itemize} \item Implementing
+the Q-Learning algorithm \item Control the angle \item Control the hovering
 \end{itemize}
 
-\begin{center}
-  \begin{verbatim}
-  -------------------------------------------------------------------------
-  |                       |                       |                       |
-  |                       |                       |                       |
-  |       light switch 1 -|- light switch2        |- light switch3        |
-  |                       |                       |                       |
-  |       ---             |                     door2                     |
-  |       | |           door1      shakey         |                       |
-  |       ---           (wide)                    |                       |
-  |       box             |                       |                       |
-  |                       |                     door3                     |
-  |                       |                     (wide)                    |
-  |        room1          |        room2          |         room3         |
-  -------------------------------------------------------------------------
-  \end{verbatim}
-  SRI Shakey's World
-\end{center}
+\section*{Q-Learning algorithm}
 
-The following actions have been implemented in the domain definition file :
-move, push, climb, descend, turnon and pickup and drop.
+The actual implementation of Q-Learning needs to be completed in the 
+code skeleton. The Q-Table and every other necessary elements are
+already provided.
 
-A few assumptions have been made :
-\begin{itemize}
-  \item Doors are either opened wide or narrow, it is not possible to change the
-opening.
-  \item Shakey pushing a box from a room to another imply Shakey also being in
-the destination room.
-  \item When Shakey is on a box, he can only turn a light on, he has to reach
-the ground before being able to move.
-\end{itemize}
 
-Please refer to the code and comments for more details regarding the
-implementation.
+\begin{figure}[h] \centering \includegraphics[width=.89\linewidth,
+scale=1.5]{./images/1.png} \caption{Q-Learning formula implementation}
+\end{figure} 
+
+Basically, each iteration the Q-Table is updated with the sum of the
+previous Q-Value and the product of the \textit{learning rate} and
+an expression which consists in the substraction of the previous Q-value
+from table to the addition of the sum of the previous reward and the
+product of the discount factor multiplied by the best reward.
+
+The \textit{learning rate} is chosen equal to 9 and the discount factor 
+is 0.95, which correspond to the recommanded value(not too greedy). If the
+\textit{learning rate} is high the agent learns faster. The skeleton
+provides a function \textit{double alpha(int num\_tested)} which decreases 
+the learning rate over time(over the multiple observations of a given
+state) to achieve convergence. 
+
+Then, the actions must be implemented. Basically an action in
+this lab consists in a function of the booster states. The booster can
+be turned on and off. For example the action \textit{TurnLeftForward} could
+be having the right and the middle booster turned on, while the middle one
+is off.  Keeping in mind that ideally we want as few different actions as
+possible for the learning phase to be efficient. A good choice is to
+implement \textit{forward()}, \textit{turnLeft()}, \textit{turnRight()},
+and \textit{resetRockets()}, to switch off the three boosters.
+
+\section*{Q-Learning angle controller}
+
+The aim of this part is to control the direction of the spaceship : the
+learning part is done with the angle value.
+
+\subsection*{Defining the states}
+
+The state are simply defined using a string wich is the result of a
+concatenation between the keyword "Angle:" and the result of the angle
+discretization.
+
+Indeed to avoid an infinite number of states and therefore have an
+effective Q-Learning implementation, it is necessary to discretize the
+angle value. The code skeleton provides us with a discretization function.
+
+\lstset{language=Java} 
+\begin{lstlisting} 
+int discretize(double value, int nrValues, double min, double max)
+\end{lstlisting}
+
+The tricky part is to find a good discretization, \textit{nrValues} should
+be the smallest possible because it will correspond to the number of
+states. \textit{min} and \textit{max} reduce the domains, a good choice
+could be $-\Pi/4<angle<\Pi/4$ with \textit{nrValues} equal to 5. 
+
+\subsection*{Rewards}
+
+The angle reward function should be simple, simply returns a numerical
+value.
+
+One possible solution is to use the formula $-|angle|/\Pi$ which will
+return a negative reward. 
+
+\section*{Full Q-Learning hover controller}
+
+Getting the spaceship to hover properly is a difficult task because it
+boils down to weightening an equation of three parameters : \textit{the
+angle value, the velocity on x and the velocity on y}.
+A really fine tuning is necessary for a perfect result.
+
+\subsection*{Defining the states} 
+
+The states are defined in the same way as presviously as a string. It
+is composed of the angle "A:" concatenated with its discretized value, the
+velocity on y, "VY:" concatenated with its discretize value, and the same
+for the velocity on Y.
+
+The state space, \#actions multiplied by \#states is significantly bigger
+than the previous one for controlling only the angle. This implies that
+efficient discretizations must be implemented.
+
+The same parameters are used to discretize the angle. To discretize the
+velocities the domain is really restricted, $-1<vx,vy<1$ and only five
+values are taken for each one.
+
+In total the state space is equal to $5*5*5*4=600$.
+
+\subsection*{Rewards}
+
+The final reward function for hovering simply consists in the sum of the
+negative rewards for velocities and the angle, each weightened by a
+constant.
+
+The tuning gives A=1.95 for the velocities and B=32*1.45 for the angle.
+This results in acceptable but not perfect behaviour.
 
 \newpage
 \thispagestyle{empty}
-\subsection*{Testing the domain with a simple problem}
+\subsection*{Turning off exploration}
 
-The example below is very simple problem just to test the domain.
-Shakey is in room-1 and must bring the ball from room-1 to room-3 and then
-go back to room-1. A climbable box is in room-1.
+The exploration phase consists in not always picking the highest utility
+action but also trying random actions with a certain probability in order
+to discover all the different states.
 
-The goal is defined as follow :
-\begin{verbatim}
-(:goal (and(in ball room-3) (in shakey room-1 )))
-\end{verbatim}
+If the exploration is turned off from the beginning, the agent still learns
+from experience but does not discover every state and therefore end up in
+a suboptimal policy or converge to a bad situation.
 
-Using \textit{vhpop} planner on this simple problem we get the following
-solution :
-
-\begin{figure}[h]
-    \centering
-      \includegraphics[width=0.50\linewidth]{./images/prob0_seq.png}
-    \caption{Actions sequence using vhpop}
-\end{figure}
-
-\section*{Task 2 : Problems and performance comparison}
-\thispagestyle{empty}
-In this part we are going to test and compare the different planners on a range
-of problems with increasing difficulty.
-
-\begin{itemize}
-  \item World dimensions : the default domain (see page 1) is composed of only
-three rooms. If we add more rooms or change the disposition to a grid of (n,m) rooms, the complexity increases rapidly.
-  \item The number of objects :
-  \item The initial state :
-\end{itemize}
-
-\subsection*{Identifying parameters}
-In order to create this range of problem, we first have to identify the
-parameters that can be modified to scale up the difficulty.
-
-\subsection*{Problems}
-
-
-
-\subsection*{Results}
-
-\textit{Test protocol : all tests have been done in the same conditions, on
-the same computer.}
-
-Now, let us consider the following test cases.
+For example after 900k my agent was falling endlessly with a P\_QVAL of
+-391 without being able to correct itself.
+Even after reajusting the trajectory, the agent kept falling back to a poor
+situation.
